@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthProvider';
 import { getCurrentUser } from '../supabaseClient';
 
 const Signup = () => {
@@ -8,16 +8,14 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: '',
-    role: 'patient',
-    specialization: ''
+    fullName: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
-  const { email, password, confirmPassword, fullName, role, specialization } = formData;
+  const { email, password, confirmPassword, fullName } = formData;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,24 +60,19 @@ const Signup = () => {
       return setError('Password must be at least 6 characters long');
     }
     
-    // For doctors, ensure specialization is provided
-    if (role === 'doctor' && !specialization.trim()) {
-      return setError('Specialization is required for doctors');
-    }
     
     setLoading(true);
     
     try {
       const { error } = await signUp(email, password, {
         fullName,
-        role,
-        specialization: role === 'doctor' ? specialization : null
+        role: 'patient'
       });
       
       if (error) throw error;
       
-      // Redirect based on role
-      navigate(role === 'doctor' ? '/doctor' : '/patient');
+      // Redirect to patient dashboard
+      navigate('/patient');
     } catch (err) {
       console.error('Signup error:', err);
       setError(err.message || 'Failed to create an account');
@@ -146,38 +139,8 @@ const Signup = () => {
               required
               minLength={6}
             />
+            <input type="hidden" name="role" value="patient" />
           </div>
-          
-          <div style={styles.formGroup}>
-            <label htmlFor="role">I am a</label>
-            <select
-              id="role"
-              name="role"
-              value={role}
-              onChange={handleChange}
-              style={styles.select}
-              required
-            >
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-            </select>
-          </div>
-          
-          {role === 'doctor' && (
-            <div style={styles.formGroup}>
-              <label htmlFor="specialization">Specialization</label>
-              <input
-                type="text"
-                id="specialization"
-                name="specialization"
-                value={specialization}
-                onChange={handleChange}
-                style={styles.input}
-                placeholder="e.g., Cardiologist, Dermatologist"
-                required={role === 'doctor'}
-              />
-            </div>
-          )}
           
           <button 
             type="submit" 

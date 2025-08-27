@@ -49,8 +49,44 @@ export function AuthProvider({ children }) {
     return () => subscription.subscription.unsubscribe();
   }, []);
 
+  const signUp = async (email, password, userData) => {
+    try {
+      // Create user with email and password
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: userData.fullName
+          }
+        }
+      });
+
+      if (signUpError) throw signUpError;
+
+      // Create user profile in profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: authData.user.id,
+          email: email,
+          full_name: userData.fullName,
+          role: 'patient', // Always set as patient
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (profileError) throw profileError;
+
+      return { error: null };
+    } catch (error) {
+      console.error('Signup error:', error);
+      return { error };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, role, loading }}>
+    <AuthContext.Provider value={{ user, role, loading, signUp }}>
       {children}
     </AuthContext.Provider>
   );
