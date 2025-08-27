@@ -1,5 +1,6 @@
 // Login.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './Login.css';
 
@@ -8,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,13 +42,12 @@ export default function Login() {
 
       if (profileError) throw profileError;
       
-      // Directly navigate based on role without waiting for AuthProvider
-      // This ensures immediate redirection after successful login
+      // Navigate based on role using React Router
       const targetPath = profile.role === 'doctor' ? '/doctor' : 
                         profile.role === 'patient' ? '/patient' : '/';
       
-      // Use window.location.replace for a true redirect (no history entry)
-      window.location.replace(targetPath);
+      // Use navigate for client-side routing
+      navigate(targetPath, { replace: true });
       return; // Exit the function to prevent further execution
       
     } catch (error) {
