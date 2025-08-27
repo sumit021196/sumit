@@ -78,8 +78,7 @@ const PatientDashboard = () => {
             doctor_id: formData.doctor_id,
             appointment_time: formData.appointment_time,
             reason: formData.reason,
-            status: 'pending',
-            patient_name: profile?.full_name || 'Patient'
+            status: 'scheduled'
           }
         ]);
 
