@@ -1,6 +1,56 @@
-# Getting Started with Create React App
+# React Authentication with Supabase
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a React application with Supabase authentication. It includes user signup, login, and a protected dashboard.
+
+## Prerequisites
+
+- Node.js (v14 or later)
+- npm (v6 or later)
+- A Supabase account (https://supabase.com/)
+
+## Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd sumit
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Supabase**
+   - Create a new project at https://app.supabase.com/
+   - Go to Project Settings > API
+   - Copy your project URL and anon/public key
+
+4. **Configure environment variables**
+   Create a `.env` file in the root directory with:
+   ```
+   REACT_APP_SUPABASE_URL=your-supabase-url
+   REACT_APP_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+5. **Update Supabase client**
+   Open `src/supabaseClient.js` and replace:
+   - `YOUR_SUPABASE_URL` with your Supabase URL
+   - `YOUR_SUPABASE_ANON_KEY` with your Supabase anon key
+
+6. **Start the development server**
+   ```bash
+   npm start
+   ```
+   The app will be available at http://localhost:3000
+
+## Features
+
+- User signup with email/password
+- User login with email/password
+- Protected dashboard route
+- Persistent authentication state
+- Responsive design
 
 ## Available Scripts
 

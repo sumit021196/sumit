@@ -1,24 +1,39 @@
-import logo from './logo.svg';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthProvider';
+import TestSignup from './test/TestSignup';
+import PrivateRoute from './components/PrivateRoute';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import PatientDashboard from './pages/patient/PatientDashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import RoleBasedRoute from './components/RoleBasedRoute';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/test-signup" element={<TestSignup />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route element={<RoleBasedRoute allowedRoles={['doctor']} />}>
+              <Route path="/doctor" element={<DoctorDashboard />} />
+            </Route>
+            <Route element={<RoleBasedRoute allowedRoles={['patient']} />}>
+              <Route path="/patient" element={<PatientDashboard />} />
+            </Route>
+          </Route>
+          
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 

@@ -1,0 +1,555 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../supabaseClient';
+
+const PatientDashboard = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [doctors, setDoctors] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    doctor_id: '',
+    appointment_time: '',
+    reason: ''
+  });
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState('');
+  const [bookingError, setBookingError] = useState('');
+
+  // Fetch all doctors
+  const fetchDoctors = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'doctor');
+
+      if (error) throw error;
+      setDoctors(data || []);
+    } catch (error) {
+      console.error('Error fetching doctors:', error);
+    }
+  }, []);
+
+  // Fetch user's appointments
+  const fetchAppointments = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          doctor:doctor_id (id, full_name, specialization)
+        `)
+        .eq('patient_id', user.id)
+        .order('appointment_time', { ascending: true });
+
+      if (error) throw error;
+      setAppointments(data || []);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  // Book an appointment
+  const handleBookAppointment = async (e) => {
+    e.preventDefault();
+    
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setBookingError('');
+      setBookingSuccess('');
+      
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert([
+          {
+            patient_id: user.id,
+            doctor_id: formData.doctor_id,
+            appointment_time: formData.appointment_time,
+            reason: formData.reason,
+            status: 'pending',
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select();
+
+      if (error) throw error;
+      
+      // Reset form and show success message
+      setFormData({
+        doctor_id: '',
+        appointment_time: '',
+        reason: ''
+      });
+      setShowBookingForm(false);
+      setBookingSuccess('Appointment requested successfully!');
+      fetchAppointments(); // Refresh the appointments list
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      setBookingError(error.message || 'Failed to book appointment');
+    }
+  };
+
+  useEffect(() => {
+    fetchDoctors();
+    fetchAppointments();
+  }, [fetchDoctors, fetchAppointments]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCancelAppointment = async (appointmentId) => {
+    if (window.confirm('Are you sure you want to cancel this appointment?')) {
+      try {
+        const { error } = await supabase
+          .from('appointments')
+          .update({ status: 'cancelled' })
+          .eq('id', appointmentId);
+
+        if (error) throw error;
+        fetchAppointments();
+        setBookingSuccess('Appointment cancelled successfully!');
+      } catch (error) {
+        console.error('Error cancelling appointment:', error);
+        setBookingError('Failed to cancel appointment');
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) throw error;
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  if (loading) {
+    return <div style={styles.loading}>Loading...</div>;
+  }
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h2>Patient Dashboard</h2>
+        <button onClick={handleLogout} style={styles.logoutButton}>
+          Logout
+        </button>
+      </div>
+      
+      {bookingSuccess && <div style={styles.successMessage}>{bookingSuccess}</div>}
+      {bookingError && <div style={styles.errorMessage}>{bookingError}</div>}
+      
+      <div style={styles.contentContainer}>
+        <div style={styles.sectionHeader}>
+          <h3>Your Appointments</h3>
+          <button 
+            onClick={() => setShowBookingForm(!showBookingForm)}
+            style={styles.primaryButton}
+          >
+            {showBookingForm ? 'Hide Form' : 'Book New Appointment'}
+          </button>
+        </div>
+        
+        {showBookingForm && (
+          <div style={styles.bookingForm}>
+            <h4>Book Appointment</h4>
+            <form onSubmit={handleBookAppointment}>
+              <div style={styles.formGroup}>
+                <label>Doctor:</label>
+                <select
+                  name="doctor_id"
+                  value={formData.doctor_id}
+                  onChange={handleInputChange}
+                  required
+                  style={styles.select}
+                >
+                  <option value="">Select a doctor</option>
+                  {doctors.map(doctor => (
+                    <option key={doctor.id} value={doctor.id}>
+                      Dr. {doctor.full_name} - {doctor.specialization || 'General'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div style={styles.formGroup}>
+                <label>Date & Time:</label>
+                <input
+                  type="datetime-local"
+                  name="appointment_time"
+                  value={formData.appointment_time}
+                  onChange={handleInputChange}
+                  required
+                  style={styles.input}
+                />
+              </div>
+              
+              <div style={styles.formGroup}>
+                <label>Reason for visit:</label>
+                <textarea
+                  name="reason"
+                  value={formData.reason}
+                  onChange={handleInputChange}
+                  required
+                  style={styles.textarea}
+                  placeholder="Briefly describe your symptoms or reason for the visit"
+                />
+              </div>
+              
+              <div style={styles.buttonGroup}>
+                <button type="submit" style={styles.submitButton}>
+                  Book Appointment
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowBookingForm(false)}
+                  style={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+        
+    {appointments.length > 0 ? (
+      <div style={styles.appointmentsGrid}>
+        {appointments.map(appointment => (
+          <div key={appointment.id} style={styles.appointmentCard}>
+            <h4>Dr. {appointment.doctor?.full_name || 'Doctor'}</h4>
+            <p><strong>Specialization:</strong> {appointment.doctor?.specialization || 'General'}</p>
+            <p><strong>Date:</strong> {new Date(appointment.appointment_time).toLocaleString()}</p>
+            <p><strong>Status:</strong> <span style={getStatusStyle(appointment.status)}>
+              {appointment.status}
+            </span></p>
+            {appointment.reason && <p><strong>Reason:</strong> {appointment.reason}</p>}
+            {appointment.status === 'pending' && (
+              <button 
+                onClick={() => handleCancelAppointment(appointment.id)}
+                style={styles.cancelAppointmentButton}
+              >
+                Cancel Appointment
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p style={styles.noAppointments}>No appointments scheduled yet.</p>
+    )}
+  </div>
+);
+
+const styles = {
+  container: {
+    padding: '20px',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    minHeight: '100vh',
+    backgroundColor: '#f5f5f5',
+  },
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '1.2rem',
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '30px',
+    padding: '20px',
+    borderBottom: '1px solid #eee',
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  },
+  logoutButton: {
+    padding: '8px 16px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+  },
+  contentContainer: {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    marginBottom: '30px',
+  },
+  sectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px',
+    paddingBottom: '15px',
+    borderBottom: '1px solid #eee',
+  },
+  primaryButton: {
+    padding: '8px 16px',
+    backgroundColor: '#2196F3',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+  },
+  bookingForm: {
+    backgroundColor: '#f8f9fa',
+    padding: '20px',
+    borderRadius: '8px',
+    marginBottom: '30px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+  },
+  formGroup: {
+    marginBottom: '15px',
+  },
+  select: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    backgroundColor: 'white',
+    fontSize: '14px',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontSize: '14px',
+  },
+  textarea: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontFamily: 'inherit',
+    minHeight: '100px',
+    resize: 'vertical',
+  },
+  buttonGroup: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '20px',
+  },
+  submitButton: {
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+  },
+  cancelButton: {
+    padding: '10px 20px',
+    backgroundColor: '#f44336',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+  },
+  successMessage: {
+    backgroundColor: '#d4edda',
+    color: '#155724',
+    padding: '12px',
+    borderRadius: '4px',
+    marginBottom: '20px',
+    borderLeft: '4px solid #28a745',
+  },
+  errorMessage: {
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+    padding: '12px',
+    borderRadius: '4px',
+    marginBottom: '20px',
+    borderLeft: '4px solid #dc3545',
+  },
+  appointmentsGrid: {
+    marginTop: '20px',
+    display: 'grid',
+    gridGap: '20px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+  },
+  appointmentCard: {
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    padding: '20px',
+    backgroundColor: 'white',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    },
+  },
+  cancelAppointmentButton: {
+    padding: '8px 16px',
+    backgroundColor: '#f44336',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    marginTop: '15px',
+    width: '100%',
+    fontWeight: '500',
+    '&:hover': {
+      backgroundColor: '#d32f2f',
+    },
+  },
+  noAppointments: {
+    textAlign: 'center',
+    color: '#6c757d',
+    margin: '30px 0',
+    fontSize: '1.1rem',
+  },
+  headerButtons: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap',
+  },
+  primaryButton: {
+    padding: '8px 16px',
+    backgroundColor: '#2196F3',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#0b7dda',
+    },
+  },
+  logoutButton: {
+    padding: '8px 16px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+    '&:hover': {
+      backgroundColor: '#c82333',
+    },
+  },
+  bookingForm: {
+    backgroundColor: '#f8f9fa',
+    padding: '20px',
+    borderRadius: '8px',
+    marginBottom: '30px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+  },
+  formGroup: {
+    marginBottom: '15px',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontSize: '14px',
+  },
+  select: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    backgroundColor: 'white',
+    fontSize: '14px',
+  },
+  textarea: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontFamily: 'inherit',
+    minHeight: '100px',
+    resize: 'vertical',
+  },
+  submitButton: {
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    '&:hover': {
+      backgroundColor: '#45a049',
+    },
+  },
+  content: {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  },
+  successMessage: {
+    backgroundColor: '#d4edda',
+    color: '#155724',
+    padding: '12px',
+    borderRadius: '4px',
+    marginBottom: '20px',
+    borderLeft: '4px solid #28a745',
+  },
+  errorMessage: {
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+    padding: '12px',
+    borderRadius: '4px',
+    marginBottom: '20px',
+    borderLeft: '4px solid #dc3545'
+  }
+};
+
+const getStatusStyle = (status) => {
+  if (!status) return {};
+  const statusLower = status.toLowerCase();
+  switch (statusLower) {
+    case 'confirmed':
+      return { color: '#4CAF50', fontWeight: 'bold' };
+    case 'pending':
+      return { color: '#FFC107', fontWeight: 'bold' };
+    case 'cancelled':
+      return { color: '#F44336', fontWeight: 'bold' };
+    default:
+      return {};
+  }
+};
+
+export default PatientDashboard;
