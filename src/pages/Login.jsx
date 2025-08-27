@@ -43,6 +43,7 @@ export default function Login() {
       if (profileError) throw profileError;
       
       // Redirect based on role
+      setLoading(false);
       if (profile.role === 'doctor') {
         navigate('/doctor', { replace: true });
       } else if (profile.role === 'patient') {

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthProvider';
 import { supabase } from '../../supabaseClient';
 
 const DoctorDashboard = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,18 +48,42 @@ const DoctorDashboard = () => {
 
   // Initial data fetch
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       fetchAppointments();
     }
-  }, [user, fetchAppointments]);
+  }, [user?.id, fetchAppointments]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <div style={styles.container}>
-      <h2>Doctor Dashboard</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h2>Doctor Dashboard</h2>
+        <button 
+          onClick={handleLogout}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#dc3545',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Logout
+        </button>
+      </div>
       {error && <div style={styles.error}>{error}</div>}
       
       <h3>Your Appointments</h3>
