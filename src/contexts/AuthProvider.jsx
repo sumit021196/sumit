@@ -1,191 +1,168 @@
 // src/contexts/AuthProvider.jsx
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "../supabaseClient";
 
 const AuthContext = createContext();
 
+// Default role for new users
+const DEFAULT_ROLE = 'patient';
+
+// Helper function to ensure user profile exists
+const ensureProfile = async (user) => {
+  if (!user) return null;
+
+  // Check if profile exists
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (error) {
+    // If profile doesn't exist, create a new one using upsert to prevent race conditions
+    console.warn('Profile not found, creating/updating profile with role:', DEFAULT_ROLE);
+    const { data: newProfile, error: createError } = await supabase
+      .from('profiles')
+      .upsert(
+        {
+          id: user.id,
+          email: user.email,
+          role: DEFAULT_ROLE,
+          full_name: user.full_name || user.email?.split('@')[0] || 'User',
+          updated_at: new Date().toISOString()
+        },
+        { onConflict: 'id' }
+      )
+      .select()
+      .single();
+
+    if (createError) {
+      console.error('Error creating profile:', createError);
+      throw createError;
+    }
+    
+    console.log('New profile created:', newProfile);
+    return { ...newProfile, isNew: true };
+  }
+  
+  console.log('User profile found:', profile);
+  return { ...profile, isNew: false };
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, _setLoading] = useState(true);
+  const loadingRef = useRef(loading);
+  
+  // Keep ref in sync with state
+  const setLoading = useCallback((value) => {
+    loadingRef.current = value;
+    _setLoading(value);
+  }, []);
   const [session, setSession] = useState(null);
 
-  const handleAuthChange = useCallback(async (event, session) => {
+  // Handle auth state changes - only manages session state
+  const handleAuthChange = useCallback((event, newSession) => {
     console.log('=== AUTH STATE CHANGED ===', event);
     
-    // Skip if no relevant change
-    if (event === 'INITIAL_SESSION' && !session) return;
-    
-    if (event === 'SIGNED_OUT') {
-      console.log('User signed out, clearing state');
+    if (event === 'SIGNED_OUT' || !newSession?.user) {
+      console.log('User signed out or no session, clearing state');
       setUser(null);
       setRole(null);
       setSession(null);
       return;
     }
     
-    if (!session?.user) {
-      console.log('No user in session, clearing state');
-      setUser(null);
-      setRole(null);
-      return;
-    }
+    // Only update session and user state
+    setSession(newSession);
+    setUser(newSession.user);
+  }, [setUser, setRole, setSession]);
+  
+  // Handle profile loading whenever user changes
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) {
+        setRole(null);
+        return;
+      }
+      
+      try {
+        setLoading(true);
+        const profile = await ensureProfile(user);
+        setRole(profile?.role || DEFAULT_ROLE);
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        setRole(DEFAULT_ROLE);
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    console.log('Setting user and session in state');
-    // Only update if user actually changed
-    setUser(currentUser => {
-      if (JSON.stringify(session?.user) !== JSON.stringify(currentUser)) {
-        return session.user;
-      }
-      return currentUser;
-    });
-    setSession(currentSession => {
-      if (JSON.stringify(session) !== JSON.stringify(currentSession)) {
-        return session;
-      }
-      return currentSession;
-    });
-    
-    try {
-      // Check if profile exists
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-        
-      if (error) {
-        console.warn('Profile not found, creating new profile with patient role');
-        setRole('patient');
-        
-        try {
-          // Create a new profile with patient role
-          const { data, error: createError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: session.user.id,
-                email: session.user.email,
-                role: 'patient',
-                full_name: session.user.email?.split('@')[0] || 'User',
-                updated_at: new Date().toISOString()
-              }
-            ])
-            .select()
-            .single();
-            
-          if (createError) {
-            console.error('Error creating profile:', createError);
-            throw createError;
-          }
-          
-          console.log('New profile created:', data);
-        } catch (err) {
-          console.error('Failed to create profile:', err);
-          setRole(null);
-        }
-      } else {
-        console.log('User profile:', profile);
-        setRole(profile?.role || 'user');
-      }
-    } catch (error) {
-      console.error('Error in auth state change:', error);
-      setRole('user');
+    if (user) {
+      loadProfile();
     }
-  }, []); // No dependencies needed as we're using functional updates  
+  }, [user]); // Depend on the full user object
 
   // Initialize the auth state - runs only once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let isMounted = true;
+    let subscription = null;
     
     const authTimeout = setTimeout(() => {
-      if (isMounted && loading) {
+      if (isMounted && loadingRef.current) {
         console.warn('Auth check taking too long, forcing state update');
         setLoading(false);
-        setRole(currentRole => currentRole || 'patient');
       }
     }, 5000);
 
     console.log('=== AUTH PROVIDER MOUNTED ===');
     
-    const initializeAuth = async () => {
+    const setupAuth = async () => {
       try {
+        setLoading(true);
         // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
-        console.log('Initial session:', session);
-        
         if (error) throw error;
         
+        // Set up the auth state change listener
+        const { data } = supabase.auth.onAuthStateChange(handleAuthChange);
+        
+        subscription = data.subscription;
+        
+        // If we have a session, update the state
         if (session?.user) {
-          console.log('Initial user:', session.user);
+          console.log('Initial session found:', session.user.email);
+          setSession(session);
           setUser(session.user);
-          
-          // Try to get user profile
-          try {
-            const { data: profile, error } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-              
-            if (error) {
-              console.warn('Error fetching profile, using default role:', error.message);
-              setRole('user');
-            } else {
-              console.log('User profile:', profile);
-              setRole(profile?.role || 'user');
-              
-              // If profile exists but is missing required fields, update it
-              if (!profile?.full_name || !profile?.role) {
-                console.log('Updating incomplete profile...');
-                const updates = {
-                  id: session.user.id,
-                  updated_at: new Date().toISOString(),
-                  ...(profile?.full_name ? {} : { full_name: session.user.email?.split('@')[0] || 'User' }),
-                  ...(profile?.role ? {} : { role: 'user' })
-                };
-                
-                const { error: updateError } = await supabase
-                  .from('profiles')
-                  .upsert(updates);
-                  
-                if (updateError) {
-                  console.error('Error updating profile:', updateError);
-                }
-              }
-            }
-          } catch (profileError) {
-            console.error('Error in profile fetch/update:', profileError);
-            setRole('user');
-          }
+        } else {
+          console.log('No active session found');
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    initializeAuth();
+    setupAuth();
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change detected:', event);
-      handleAuthChange(event, session);
-    });
-
+    // Cleanup
     return () => {
       isMounted = false;
       clearTimeout(authTimeout);
       subscription?.unsubscribe();
     };
-  }, [handleAuthChange, loading]); // Include all dependencies
+  }, [handleAuthChange, setSession, setUser]);
 
   const signOut = useCallback(async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setRole(null);
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      // State will be updated by the auth state change listener
       return { error: null };
     } catch (error) {
       console.error('Error signing out:', error);
@@ -208,21 +185,15 @@ export const AuthProvider = ({ children }) => {
 
       if (signUpError) throw signUpError;
 
-      // Create user profile in profiles table
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: authData.user.id,
-          email: email,
-          full_name: userData.fullName,
-          role: 'patient',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
+      // Ensure profile exists for the new user
+      const userWithFullName = {
+        ...authData.user,
+        full_name: userData.fullName
+      };
+      
+      await ensureProfile(userWithFullName);
 
-      if (profileError) throw profileError;
-
-      return { error: null };
+      return { error: null, user: authData.user };
     } catch (error) {
       console.error('Signup error:', error);
       return { error };
