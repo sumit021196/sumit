@@ -14,6 +14,7 @@ const DoctorDashboard = () => {
   const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null); // clear previous errors
       const { data, error } = await supabase
         .from('appointments')
         .select('*')
@@ -28,7 +29,7 @@ const DoctorDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]); // Add user.id as a dependency
+  }, [user?.id]);
 
   // Update appointment status
   const updateAppointmentStatus = async (appointmentId, status) => {
@@ -54,7 +55,11 @@ const DoctorDashboard = () => {
   }, [user?.id, fetchAppointments]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={styles.loading}>
+        <p>Loading appointments...</p>
+      </div>
+    );
   }
 
   const handleLogout = async () => {
@@ -68,19 +73,9 @@ const DoctorDashboard = () => {
 
   return (
     <div style={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div style={styles.header}>
         <h2>Doctor Dashboard</h2>
-        <button 
-          onClick={handleLogout}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
+        <button onClick={handleLogout} style={styles.logoutButton}>
           Logout
         </button>
       </div>
@@ -92,24 +87,33 @@ const DoctorDashboard = () => {
           appointments.map((appointment) => (
             <div key={appointment.id} style={styles.appointmentCard}>
               <p><strong>Patient:</strong> {appointment.patient_name}</p>
-              <p><strong>Time:</strong> {new Date(appointment.appointment_time).toLocaleString()}</p>
+              <p>
+                <strong>Time:</strong>{' '}
+                {new Date(appointment.appointment_time).toLocaleString(undefined, {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                })}
+              </p>
               <p><strong>Status:</strong> {appointment.status}</p>
               <div style={styles.buttonGroup}>
                 <button 
                   onClick={() => updateAppointmentStatus(appointment.id, 'confirmed')}
                   disabled={appointment.status === 'confirmed'}
+                  style={appointment.status === 'confirmed' ? styles.disabledButton : styles.actionButton}
                 >
                   Confirm
                 </button>
                 <button 
                   onClick={() => updateAppointmentStatus(appointment.id, 'completed')}
                   disabled={appointment.status === 'completed'}
+                  style={appointment.status === 'completed' ? styles.disabledButton : styles.actionButton}
                 >
                   Mark as Completed
                 </button>
                 <button 
                   onClick={() => updateAppointmentStatus(appointment.id, 'cancelled')}
                   disabled={appointment.status === 'cancelled'}
+                  style={appointment.status === 'cancelled' ? styles.disabledButton : styles.cancelButton}
                 >
                   Cancel
                 </button>
@@ -130,12 +134,34 @@ const styles = {
     maxWidth: '1200px',
     margin: '0 auto',
   },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px',
+  },
+  logoutButton: {
+    padding: '8px 16px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
   error: {
     color: 'red',
     marginBottom: '20px',
     padding: '10px',
     backgroundColor: '#ffebee',
     borderRadius: '4px',
+  },
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '50vh',
+    fontSize: '18px',
+    fontWeight: '500',
   },
   appointmentsList: {
     display: 'grid',
@@ -153,6 +179,30 @@ const styles = {
     display: 'flex',
     gap: '10px',
     marginTop: '10px',
+  },
+  actionButton: {
+    padding: '6px 12px',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    cursor: 'pointer',
+  },
+  cancelButton: {
+    padding: '6px 12px',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    cursor: 'pointer',
+  },
+  disabledButton: {
+    padding: '6px 12px',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#ccc',
+    color: '#666',
+    cursor: 'not-allowed',
   },
 };
 

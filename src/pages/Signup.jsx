@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthProvider';
-import { getCurrentUser } from '../supabaseClient';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +11,7 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signUp } = useAuth();
+  const { signUp, role } = useAuth();
   const navigate = useNavigate();
 
   const { email, password, confirmPassword, fullName } = formData;
@@ -25,23 +24,6 @@ const Signup = () => {
     }));
   };
 
-  // Check if user is already logged in
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { user } } = await getCurrentUser();
-        if (user) {
-          navigate('/dashboard');
-        }
-      } catch (error) {
-        console.error('Error checking user:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkUser();
-  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,20 +41,21 @@ const Signup = () => {
     if (password.length < 6) {
       return setError('Password must be at least 6 characters long');
     }
-    
-    
+
     setLoading(true);
-    
+
     try {
-      const { error } = await signUp(email, password, {
-        fullName,
-        role: 'patient'
-      });
-      
+      const { error } = await signUp(email, password, { fullName });
       if (error) throw error;
-      
-      // Redirect to patient dashboard
-      navigate('/patient');
+
+      // ✅ Safer redirect: check role
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'doctor') {
+        navigate('/doctor');
+      } else {
+        navigate('/patient'); // default
+      }
     } catch (err) {
       console.error('Signup error:', err);
       setError(err.message || 'Failed to create an account');
@@ -139,7 +122,6 @@ const Signup = () => {
               required
               minLength={6}
             />
-            <input type="hidden" name="role" value="patient" />
           </div>
           
           <button 
