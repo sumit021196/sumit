@@ -8,80 +8,79 @@ export function AuthProvider({ children }) {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Helper: Fetch user + role
+  const fetchUserAndRole = async (authUser) => {
+    if (!authUser) {
+      setUser(null);
+      setRole(null);
+      setLoading(false);
+      return;
+    }
+
+    setUser(authUser);
+
+    // profiles se role fetch karo
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", authUser.id)
+      .single();
+
+    if (!error && profile) {
+      setRole(profile.role);
+    } else {
+      setRole(null);
+    }
+
+    setLoading(false);
+  };
+
   // ✅ Auth state listener
   useEffect(() => {
-    const getUser = async () => {
+    const init = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (user) {
-        // role fetch karo profiles se
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single();
-
-        if (profile) setRole(profile.role);
-      }
-      setLoading(false);
+      await fetchUserAndRole(user);
     };
 
-    getUser();
+    init();
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        setUser(session?.user || null);
-
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", session.user.id)
-            .single();
-          setRole(profile?.role || null);
-        } else {
-          setRole(null);
-        }
+        await fetchUserAndRole(session?.user || null);
       }
     );
 
-    return () => subscription.subscription.unsubscribe();
+    return () => subscription?.subscription?.unsubscribe();
   }, []);
 
+  // ✅ Signup
   const signUp = async (email, password, userData) => {
     try {
-      // Create user with email and password
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            full_name: userData.fullName
-          }
-        }
+        options: { data: { full_name: userData.fullName } }
       });
 
       if (signUpError) throw signUpError;
 
-      // Create user profile in profiles table
+      // profiles me entry create karo (role backend/RLS se enforce hona chahiye)
       const { error: profileError } = await supabase
-        .from('profiles')
+        .from("profiles")
         .upsert({
           id: authData.user.id,
-          email: email,
+          email,
           full_name: userData.fullName,
-          role: 'patient', // Always set as patient
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         });
 
       if (profileError) throw profileError;
 
-      return { error: null };
+      return { data: authData.user, error: null };
     } catch (error) {
-      console.error('Signup error:', error);
-      return { error };
+      console.error("Signup error:", error.message);
+      return { data: null, error };
     }
   };
 
