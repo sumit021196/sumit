@@ -1,70 +1,65 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthProvider';
-import TestSignup from './test/TestSignup';
-import PrivateRoute from './components/PrivateRoute';
-import DoctorDashboard from './pages/doctor/DoctorDashboard';
-import PatientDashboard from './pages/patient/PatientDashboard';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './contexts/AuthProvider';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import RoleBasedRoute from './components/RoleBasedRoute';
+import PatientDashboard from './pages/patient/Dashboard';
 import './App.css';
 
-// Wrapper to handle initial loading state
-const AppContent = () => {
-  const { loading, user, role } = useAuth();
-  const location = useLocation();
+// Protected Route Component
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { user, role, loading } = useAuth();
 
-  // Show loading state while checking auth
   if (loading) {
-    return (
-      <div className="app-loading">
-        <div className="spinner"></div>
-        <p>Loading application...</p>
-      </div>
-    );
+    return <div>Loading...</div>; // Or a loading spinner
   }
 
-  // Public routes that don't require authentication
-  const publicRoutes = ['/login', '/signup', '/test-signup'];
-  const isPublicRoute = publicRoutes.includes(location.pathname);
-
-  // If user is not authenticated and trying to access protected route, redirect to login
-  if (!user && !isPublicRoute) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
-  return (
-    <Routes>
-      <Route path="/" element={<Navigate to={role ? `/${role}` : '/login'} replace />} />
-      
-      {/* Public Routes */}
-      <Route path="/login" element={!user ? <Login /> : <Navigate to={`/${role}`} replace />} />
-      <Route path="/signup" element={!user ? <Signup /> : <Navigate to={`/${role}`} replace />} />
-      <Route path="/test-signup" element={<TestSignup />} />
-      
-      {/* Protected Routes */}
-      <Route element={<PrivateRoute />}>
-        <Route element={<RoleBasedRoute allowedRoles={['doctor']} />}>
-          <Route path="/doctor/*" element={<DoctorDashboard />} />
-        </Route>
-        <Route element={<RoleBasedRoute allowedRoles={['patient']} />}>
-          <Route path="/patient/*" element={<PatientDashboard />} />
-        </Route>
-      </Route>
-      
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
+  if (requiredRole && role !== requiredRole) {
+    // If user doesn't have the required role, redirect to home or show unauthorized
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="App">
-        <AppContent />
-      </div>
-    </AuthProvider>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        
+        {/* Protected Routes */}
+        <Route
+          path="/patient/*"
+          element={
+            <ProtectedRoute>
+              <PatientDashboard />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Add other protected routes for admin and doctor */}
+        {/* 
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        */}
+        
+        {/* Catch all other routes */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
   );
 }
 

@@ -11,7 +11,7 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signUp, role } = useAuth();
+  const { signUp } = useAuth();
   const navigate = useNavigate();
 
   const { email, password, confirmPassword, fullName } = formData;
@@ -45,16 +45,15 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const { error } = await signUp(email, password, { fullName });
+      const { data, error } = await signUp(email, password, { fullName });
+      
       if (error) throw error;
-
-      // ✅ Safer redirect: check role
-      if (role === 'admin') {
-        navigate('/admin');
-      } else if (role === 'doctor') {
-        navigate('/doctor');
-      } else {
-        navigate('/patient'); // default
+      
+      // After successful signup, redirect to login
+      if (data) {
+        // Show success message and redirect to login
+        alert('Registration successful! Please log in.');
+        navigate('/login');
       }
     } catch (err) {
       console.error('Signup error:', err);
