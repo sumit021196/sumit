@@ -1,195 +1,217 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Container,
-  Grid,
-  Typography,
-  useTheme,
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  IconButton
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-
-const projects = [
-  {
-    id: 1,
-    title: 'E-commerce Platform',
-    description: 'A full-stack e-commerce solution with payment integration and admin dashboard.',
-    image: 'https://source.unsplash.com/random/600x400?ecommerce',
-  },
-  {
-    id: 2,
-    title: 'Task Management App',
-    description: 'A collaborative task management application with real-time updates.',
-    image: 'https://source.unsplash.com/random/600x400?task',
-  },
-  {
-    id: 3,
-    title: 'Portfolio Website',
-    description: 'A modern portfolio website showcasing creative work and skills.',
-    image: 'https://source.unsplash.com/random/600x400?portfolio',
-  },
-];
+import React from 'react';
+import { Box, Button, Container, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { motion } from 'framer-motion';
+import { TypeAnimation } from 'react-type-animation';
+import { Link } from 'react-router-dom';
+import CodeIcon from '@mui/icons-material/Code';
+import BuildIcon from '@mui/icons-material/Build';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 const Home = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  useEffect(() => {
-    // Preload images for better performance
-    projects.forEach(project => {
-      const img = new Image();
-      img.src = project.image;
-    });
-  }, []);
-
-  const handleSignUp = () => {
-    navigate('/signup');
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+      },
+    },
   };
 
   return (
-    <>
-      {/* Document title and meta tags are set in index.html */}
-
-      <CssBaseline />
-      
-      <AppBar position="static" color="primary" elevation={0}>
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Sumit Meshram
-          </Typography>
-          <Button color="inherit" onClick={handleSignUp}>Sign Up</Button>
-        </Toolbar>
-      </AppBar>
-
-      <Box component="main">
-        {/* Hero Section */}
-        <Box
-          sx={{
-            bgcolor: 'primary.main',
-            color: 'white',
-            pt: 15,
-            pb: 15,
-            textAlign: 'center',
-          }}
+    <Box
+      sx={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        px: 3,
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: 'url("/cover.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          filter: 'brightness(0.4)',
+          zIndex: 0,
+        }
+      }}
+    >
+      <Box sx={{ 
+        position: 'relative',
+        zIndex: 1,
+        width: '100%',
+        py: 12,
+        background: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(2px)',
+        color: 'white'
+      }}>
+      <Container maxWidth="md">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          viewport={{ once: true }}
         >
-          <Container maxWidth="md">
-            <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-              Sumit Meshram
-            </Typography>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4, opacity: 0.9 }}>
-              Full Stack Developer | Tech Enthusiast
-            </Typography>
-            <Button 
-              variant="contained" 
-              color="secondary" 
+          <Typography
+            variant={isMobile ? 'h4' : 'h2'}
+            component="h1"
+            gutterBottom
+            sx={{
+              fontWeight: 700,
+              background: 'linear-gradient(45deg, #1976d2 30%, #21CBF3 90%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 2,
+            }}
+          >
+            Hi, I'm Sumit
+          </Typography>
+          
+          <Typography
+            variant={isMobile ? 'h5' : 'h4'}
+            component="h2"
+            color="white"
+            sx={{ mb: 4, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+          >
+            <TypeAnimation
+              sequence={[
+                'Full Stack Developer',
+                1000,
+                'Web Enthusiast',
+                1000,
+                'Problem Solver',
+                1000,
+                'Tech Lover',
+                1000,
+              ]}
+              wrapper="span"
+              speed={50}
+              style={{ display: 'inline-block' }}
+              repeat={Infinity}
+            />
+          </Typography>
+
+          <Typography
+            variant={isMobile ? 'body1' : 'h6'}
+            color="rgba(255, 255, 255, 0.9)"
+            sx={{ mb: 4, maxWidth: '800px', mx: 'auto', lineHeight: 1.8, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+          >
+            I build exceptional digital experiences with modern technologies and clean code.
+            Currently focused on creating impactful web applications that make a difference.
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', mb: 8 }}>
+            <Button
+              component={Link}
+              to="/projects"
+              variant="contained"
               size="large"
-              onClick={handleSignUp}
+              startIcon={<CodeIcon />}
               sx={{
                 px: 4,
                 py: 1.5,
-                fontSize: '1.1rem',
+                borderRadius: '50px',
                 textTransform: 'none',
-                borderRadius: 2,
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: 3,
-                },
-                transition: 'all 0.3s ease',
+                fontWeight: 600,
+                fontSize: isMobile ? '0.9rem' : '1rem',
               }}
             >
-              Get Started
+              View My Work
             </Button>
-          </Container>
+            <Button
+              component={Link}
+              to="/contact"
+              variant="outlined"
+              size="large"
+              startIcon={<RocketLaunchIcon />}
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: '50px',
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: isMobile ? '0.9rem' : '1rem',
+              }}
+            >
+              Contact Me
+            </Button>
+          </Box>
+        </motion.div>
+
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+            gap: 3,
+            mt: 8,
+          }}
+        >
+          {[
+            {
+              icon: <CodeIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+              title: 'Web Development',
+              description: 'Building responsive and performant web applications using modern technologies.',
+            },
+            {
+              icon: <BuildIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+              title: 'Problem Solving',
+              description: 'Analyzing complex problems and providing efficient, scalable solutions.',
+            },
+            {
+              icon: <RocketLaunchIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+              title: 'Continuous Learning',
+              description: 'Always exploring new technologies and best practices to stay ahead.',
+            },
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+            >
+              <Box
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  borderRadius: 2,
+                  background: 'white',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
+                  },
+                }}
+              >
+                <Box sx={{ mb: 2 }}>{item.icon}</Box>
+                <Typography variant="h6" component="h3" gutterBottom sx={{ fontWeight: 600 }}>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {item.description}
+                </Typography>
+              </Box>
+            </motion.div>
+          ))}
         </Box>
-
-        {/* Projects Section */}
-        <Container maxWidth="lg" sx={{ py: 8 }}>
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            align="center" 
-            gutterBottom
-            sx={{ 
-              fontWeight: 600,
-              mb: 6,
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                display: 'block',
-                width: '80px',
-                height: '4px',
-                background: theme.palette.primary.main,
-                margin: '16px auto 0',
-                borderRadius: '2px',
-              },
-            }}
-          >
-            My Projects
-          </Typography>
-          
-          <Grid container spacing={4}>
-            {projects.map((project) => (
-              <Grid item key={project.id} xs={12} sm={6} md={4}>
-                <Card 
-                  sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: theme.shadows[8],
-                    },
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={project.image}
-                    alt={project.title}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h3">
-                      {project.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {project.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+      </Container>
       </Box>
-
-      {/* Footer */}
-      <Box component="footer" sx={{ bgcolor: 'background.paper', py: 4, mt: 'auto' }}>
-        <Container maxWidth="lg">
-          <Typography variant="body2" color="text.secondary" align="center">
-            © {new Date().getFullYear()} Sumit Meshram. All rights reserved.
-          </Typography>
-        </Container>
-      </Box>
-    </>
+    </Box>
   );
 };
 
