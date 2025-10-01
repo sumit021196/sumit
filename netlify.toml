@@ -3,6 +3,11 @@
   to = "/index.html"
   status = 200
 
+  [[redirects]]
+  from = "/google264b8bc8d99342af.html"
+  to = "/google264b8bc8d99342af.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
