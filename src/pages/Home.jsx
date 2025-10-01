@@ -1,11 +1,17 @@
 import React from 'react';
-import { Box, Button, Container, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Button, Container, Typography, useTheme, useMediaQuery, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { Link } from 'react-router-dom';
 import CodeIcon from '@mui/icons-material/Code';
 import BuildIcon from '@mui/icons-material/Build';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import SecurityIcon from '@mui/icons-material/Security';
+import StorageIcon from '@mui/icons-material/Storage';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const Home = () => {
   const theme = useTheme();
@@ -152,31 +158,73 @@ const Home = () => {
           </Box>
         </motion.div>
 
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
-            gap: 3,
-            mt: 8,
-          }}
-        >
-          {[
-            {
-              icon: <CodeIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-              title: 'Web Development',
-              description: 'Building responsive and performant web applications using modern technologies.',
-            },
-            {
-              icon: <BuildIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-              title: 'Problem Solving',
-              description: 'Analyzing complex problems and providing efficient, scalable solutions.',
-            },
-            {
-              icon: <RocketLaunchIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-              title: 'Continuous Learning',
-              description: 'Always exploring new technologies and best practices to stay ahead.',
-            },
-          ].map((item, index) => (
+        {/* Services Section */}
+        <Box sx={{ width: '100%', mt: 8 }}>
+          <Typography 
+            variant="h5" 
+            component="h2" 
+            sx={{ 
+              mb: 4, 
+              textAlign: 'center',
+              fontWeight: 600,
+              color: 'white',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+            }}
+          >
+            What I Do
+          </Typography>
+          
+          <Box
+            className="services-container"
+            sx={{
+              display: 'flex',
+              gap: 3,
+              overflowX: 'auto',
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': { display: 'none' },
+              py: 2,
+              px: { xs: 2, sm: 0 },
+              '& > *': {
+                flex: '0 0 auto',
+                width: { xs: '85%', sm: 'calc(50% - 12px)', md: 'calc(33.333% - 16px)' },
+                maxWidth: { xs: '300px', sm: 'none' },
+                scrollSnapAlign: 'start',
+              },
+              scrollSnapType: 'x mandatory',
+            }}
+          >
+            {[
+              {
+                icon: <CodeIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'Web Development',
+                description: 'Building responsive and performant web applications using modern technologies like React, Next.js, and Node.js.',
+              },
+              {
+                icon: <BuildIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'Problem Solving',
+                description: 'Analyzing complex problems and providing efficient, scalable solutions with clean and maintainable code.',
+              },
+              {
+                icon: <DesignServicesIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'UI/UX Design',
+                description: 'Creating beautiful and intuitive user interfaces with a focus on user experience and accessibility.',
+              },
+              {
+                icon: <MobileFriendlyIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'Mobile First',
+                description: 'Designing with mobile-first approach to ensure seamless experience across all devices.',
+              },
+              {
+                icon: <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'Security First',
+                description: 'Implementing best security practices to protect user data and prevent vulnerabilities.',
+              },
+              {
+                icon: <StorageIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+                title: 'Database Design',
+                description: 'Designing efficient database schemas and optimizing queries for better performance.'
+              }
+            ].map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -208,6 +256,31 @@ const Home = () => {
               </Box>
             </motion.div>
           ))}
+          </Box>
+          
+          {/* Navigation Arrows for Mobile */}
+          {isMobile && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+              <IconButton 
+                onClick={() => {
+                  const container = document.querySelector('.services-container');
+                  if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+                }}
+                sx={{ color: 'white' }}
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
+              <IconButton 
+                onClick={() => {
+                  const container = document.querySelector('.services-container');
+                  if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+                }}
+                sx={{ color: 'white' }}
+              >
+                <ArrowForwardIosIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
       </Container>
       </Box>
