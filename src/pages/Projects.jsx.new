@@ -60,7 +60,7 @@ const Projects = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, GITHUB_USERNAME, PER_PAGE]);
+  }, [page]);
 
   useEffect(() => {
     fetchRepos();
@@ -199,7 +199,7 @@ const Projects = () => {
                       <Grid item xs={12} sm={6} md={4} key={index}>
                         <motion.div variants={item}>
                           <ProjectCard 
-                            project={project}
+                            project={project} 
                             onOpen={handleOpen}
                           />
                         </motion.div>
