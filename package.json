@@ -33,7 +33,9 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "not ie > 0",
+      "not ie_mob > 0"
     ],
     "development": [
       "last 1 chrome version",
@@ -42,7 +44,6 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
     "@types/react": "^18.2.46",
@@ -64,19 +65,5 @@
     "workbox-precaching": "^7.0.0",
     "workbox-routing": "^7.0.0",
     "workbox-strategies": "^7.0.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all",
-      "not ie > 0",
-      "not ie_mob > 0"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }

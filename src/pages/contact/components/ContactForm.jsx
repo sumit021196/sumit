@@ -3,6 +3,18 @@ import { Grid, TextField, Box, Button, Alert } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import SendIcon from '@mui/icons-material/Send';
 import { alpha } from '@mui/material/styles';
+import { submitContactForm } from '../../../supabaseClient';
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5
+    }
+  }
+};
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +24,7 @@ const ContactForm = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,11 +37,11 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setSubmitStatus(null);
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // Handle successful submission
+      await submitContactForm(formData);
+      setSubmitStatus('success');
       setFormData({
         name: '',
         email: '',
@@ -37,6 +50,7 @@ const ContactForm = () => {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
+      setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
@@ -93,6 +107,33 @@ const ContactForm = () => {
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
+      <AnimatePresence>
+        {submitStatus === 'success' && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            style={{ marginBottom: 16 }}
+          >
+            <Alert severity="success" variant="outlined">
+              Message sent successfully! I'll get back to you soon.
+            </Alert>
+          </motion.div>
+        )}
+        {submitStatus === 'error' && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            style={{ marginBottom: 16 }}
+          >
+            <Alert severity="error" variant="outlined">
+              Failed to send message. Please try again or contact me directly.
+            </Alert>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} component={motion.div} variants={itemVariants}>
           <StyledTextField name="name" label="Your Name" />
@@ -163,17 +204,6 @@ const ContactForm = () => {
       </Grid>
     </Box>
   );
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5
-    }
-  }
 };
 
 export default ContactForm;

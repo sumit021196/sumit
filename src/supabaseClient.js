@@ -77,7 +77,30 @@ export const signOut = () => supabase.auth.signOut();
 
 export const getCurrentUser = () => supabase.auth.getUser();
 
-export const resetPassword = (email) => 
-  supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/reset-password`
-  });
+export const submitContactForm = async (formData) => {
+  try {
+    // Insert contact form data into a 'contact_messages' table
+    const { data, error } = await supabase
+      .from('contact_messages')
+      .insert([
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          created_at: new Date().toISOString(),
+          status: 'new'
+        }
+      ]);
+
+    if (error) {
+      console.error('Error submitting contact form:', error);
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error submitting contact form:', error);
+    throw error;
+  }
+};
