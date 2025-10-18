@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Grid, TextField, Box, Button, Alert } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import SendIcon from '@mui/icons-material/Send';
@@ -16,6 +16,56 @@ const itemVariants = {
   }
 };
 
+// Move StyledTextField outside the component to prevent recreation on every render
+const StyledTextField = ({ name, label, type = 'text', multiline = false, rows = 1, value, onChange }) => (
+  <TextField
+    fullWidth
+    label={label}
+    name={name}
+    type={type}
+    value={value}
+    onChange={onChange}
+    required
+    variant="outlined"
+    size="medium"
+    multiline={multiline}
+    rows={rows}
+    InputProps={{
+      sx: {
+        borderRadius: 2,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        border: '1px solid rgba(15, 23, 42, 0.1)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          borderColor: 'rgba(201, 168, 124, 0.3)',
+          boxShadow: '0 0 0 3px rgba(201, 168, 124, 0.1)',
+        },
+        '&.Mui-focused': {
+          borderColor: '#c9a87c',
+          boxShadow: '0 0 0 3px rgba(201, 168, 124, 0.2)',
+        },
+      },
+    }}
+    InputLabelProps={{
+      sx: {
+        color: 'rgba(15, 23, 42, 0.8)',
+        '&.Mui-focused': {
+          color: '#c9a87c',
+          fontWeight: 500,
+        },
+      },
+    }}
+    sx={{
+      '& .MuiOutlinedInput-notchedOutline': {
+        border: 'none',
+      },
+      '& .MuiInputBase-multiline': {
+        padding: '16.5px 14px',
+      },
+    }}
+  />
+);
+
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -26,13 +76,14 @@ const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
 
-  const handleChange = (e) => {
+  // Use useCallback to prevent handleChange from being recreated on every render
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,55 +106,6 @@ const ContactForm = () => {
       setIsSubmitting(false);
     }
   };
-
-  const StyledTextField = ({ name, label, type = 'text', multiline = false, rows = 1 }) => (
-    <TextField
-      fullWidth
-      label={label}
-      name={name}
-      type={type}
-      value={formData[name]}
-      onChange={handleChange}
-      required
-      variant="outlined"
-      size="medium"
-      multiline={multiline}
-      rows={rows}
-      InputProps={{
-        sx: {
-          borderRadius: 2,
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          border: '1px solid rgba(15, 23, 42, 0.1)',
-          transition: 'all 0.3s ease',
-          '&:hover': {
-            borderColor: 'rgba(201, 168, 124, 0.3)',
-            boxShadow: '0 0 0 3px rgba(201, 168, 124, 0.1)',
-          },
-          '&.Mui-focused': {
-            borderColor: '#c9a87c',
-            boxShadow: '0 0 0 3px rgba(201, 168, 124, 0.2)',
-          },
-        },
-      }}
-      InputLabelProps={{
-        sx: {
-          color: 'rgba(15, 23, 42, 0.8)',
-          '&.Mui-focused': {
-            color: '#c9a87c',
-            fontWeight: 500,
-          },
-        },
-      }}
-      sx={{
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-        },
-        '& .MuiInputBase-multiline': {
-          padding: '16.5px 14px',
-        },
-      }}
-    />
-  );
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
@@ -136,25 +138,27 @@ const ContactForm = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} component={motion.div} variants={itemVariants}>
-          <StyledTextField name="name" label="Your Name" />
+          <StyledTextField name="name" label="Your Name" value={formData.name} onChange={handleChange} />
         </Grid>
         <Grid item xs={12} sm={6} component={motion.div} variants={itemVariants}>
-          <StyledTextField name="email" label="Your Email" type="email" />
+          <StyledTextField name="email" label="Your Email" type="email" value={formData.email} onChange={handleChange} />
         </Grid>
         <Grid item xs={12} component={motion.div} variants={itemVariants}>
-          <StyledTextField name="subject" label="Subject" />
+          <StyledTextField name="subject" label="Subject" value={formData.subject} onChange={handleChange} />
         </Grid>
         <Grid item xs={12} component={motion.div} variants={itemVariants}>
-          <StyledTextField 
-            name="message" 
-            label="Your Message" 
-            multiline 
-            rows={6} 
+          <StyledTextField
+            name="message"
+            label="Your Message"
+            multiline
+            rows={6}
+            value={formData.message}
+            onChange={handleChange}
           />
         </Grid>
-        <Grid 
-          item 
-          xs={12} 
+        <Grid
+          item
+          xs={12}
           component={motion.div}
           variants={itemVariants}
           initial="hidden"
