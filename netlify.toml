@@ -1,3 +1,14 @@
+[build]
+  # Build command
+  command = "npm run build"
+
+  # Directory where built files are stored (Vite outputs to dist by default)
+  publish = "dist"
+
+  # Node.js version (optional but recommended)
+  [build.environment]
+    NODE_VERSION = "18"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
