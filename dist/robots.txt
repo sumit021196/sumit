@@ -1,0 +1,29 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://sumit021196.github.io/sumit/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+
+# Allow all other pages
+Allow: /*
+
+# Crawl-delay: 10  # Uncomment if needed to prevent server overload
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+
+# Block specific bots if needed
+# User-agent: BadBot
+# Disallow: /

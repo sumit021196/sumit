@@ -1,15 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Get Supabase URL and Anon Key from environment variables
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Validate environment variables
 if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase URL or Anon Key. Please check your .env file.');
   console.error('Current configuration:', {
-    REACT_APP_SUPABASE_URL: process.env.REACT_APP_SUPABASE_URL ? 'Set' : 'Missing',
-    REACT_APP_SUPABASE_ANON_KEY: process.env.REACT_APP_SUPABASE_ANON_KEY ? 'Set' : 'Missing'
+    VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Missing',
+    VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'Missing'
   });
 }
 
@@ -30,7 +30,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     },
   },
   // Enable debug logging
-  _debug: process.env.NODE_ENV !== 'production',
+  _debug: import.meta.env.DEV,
   // Add fetch implementation for Edge
   fetch: (...args) => fetch(...args).catch(err => {
     console.error('Fetch error:', err);

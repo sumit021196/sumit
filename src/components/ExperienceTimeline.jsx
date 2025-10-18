@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Typography, Paper, useTheme, useMediaQuery } from '@mui/material';
-import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot, TimelineOppositeContent } from '@mui/lab';
+import { Box, Typography, Paper, useTheme, useMediaQuery, Divider } from '@mui/material';
 import { School as SchoolIcon, Work as WorkIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 
@@ -46,7 +45,7 @@ const ExperienceTimeline = () => {
   };
 
   return (
-    <Timeline position={isMobile ? 'right' : 'alternate'} sx={{ p: 0, m: 0 }}>
+    <Box sx={{ p: 0, m: 0 }}>
       {experiences.map((exp, index) => (
         <motion.div
           key={exp.id}
@@ -55,31 +54,53 @@ const ExperienceTimeline = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
         >
-          <TimelineItem>
-            {!isMobile && (
-              <TimelineOppositeContent
-                sx={{ m: 'auto 0' }}
-                align="right"
-                variant="body2"
-                color="text.secondary"
+          <Box sx={{ display: 'flex', mb: 3 }}>
+            {/* Timeline dot and connector */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mr: 2 }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  backgroundColor: exp.type === 'education' ? theme.palette.primary.main : theme.palette.secondary.main,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  mb: 1,
+                }}
               >
-                {exp.period}
-              </TimelineOppositeContent>
-            )}
-            <TimelineSeparator>
-              <TimelineDot color={exp.type === 'education' ? 'primary' : 'secondary'}>
                 {getIcon(exp.type)}
-              </TimelineDot>
-              {index < experiences.length - 1 && <TimelineConnector />}
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: '12px', px: 2 }}>
+              </Box>
+              {index < experiences.length - 1 && (
+                <Box
+                  sx={{
+                    width: 2,
+                    height: 60,
+                    backgroundColor: theme.palette.divider,
+                  }}
+                />
+              )}
+            </Box>
+
+            {/* Content */}
+            <Box sx={{ flex: 1 }}>
               <Paper elevation={3} sx={{ p: 2, backgroundColor: theme.palette.background.paper }}>
-                <Typography variant="h6" component="h3">
-                  {exp.title}
-                </Typography>
-                <Typography variant="subtitle2" color="primary" sx={{ mt: 0.5, mb: 1 }}>
-                  {exp.company}
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                  <Box>
+                    <Typography variant="h6" component="h3">
+                      {exp.title}
+                    </Typography>
+                    <Typography variant="subtitle2" color="primary" sx={{ mt: 0.5 }}>
+                      {exp.company}
+                    </Typography>
+                  </Box>
+                  {!isMobile && (
+                    <Typography variant="caption" color="text.secondary">
+                      {exp.period}
+                    </Typography>
+                  )}
+                </Box>
                 {isMobile && (
                   <Typography variant="caption" color="text.secondary" display="block" mb={1}>
                     {exp.period}
@@ -89,11 +110,11 @@ const ExperienceTimeline = () => {
                   {exp.description}
                 </Typography>
               </Paper>
-            </TimelineContent>
-          </TimelineItem>
+            </Box>
+          </Box>
         </motion.div>
       ))}
-    </Timeline>
+    </Box>
   );
 };
 
