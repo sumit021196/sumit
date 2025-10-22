@@ -27,7 +27,7 @@ export default function Profile() {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { user, profile, updateProfile, updatePassword, signOut } = useAuth();
+  const { user, profile, loading, initialCheckComplete, updateProfile, updatePassword, signOut } = useAuth();
   const navigate = useNavigate();
 
   // Initialize form with user data
@@ -118,6 +118,19 @@ export default function Profile() {
     }
   };
 
+  // Show loading spinner while auth is being validated
+  if (loading || !initialCheckComplete) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center' }}>
+        <CircularProgress size={60} />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Loading profile...
+        </Typography>
+      </Container>
+    );
+  }
+
+  // Only show sign-in message if auth check is complete and no user
   if (!user) {
     return (
       <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center' }}>
@@ -131,154 +144,164 @@ export default function Profile() {
       <Typography variant="h4" component="h1" gutterBottom>
         My Profile
       </Typography>
-      
+
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
-      
+
       {message && (
         <Alert severity="success" sx={{ mb: 3 }}>
           {message}
         </Alert>
       )}
 
-      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h6">Personal Information</Typography>
-          {!isEditing ? (
-            <IconButton 
-              color="primary" 
-              onClick={() => setIsEditing(true)}
-              aria-label="edit profile"
-            >
-              <EditIcon />
-            </IconButton>
-          ) : (
-            <Box>
-              <IconButton 
-                color="primary" 
-                onClick={handleProfileUpdate}
-                disabled={isLoading}
-                aria-label="save changes"
+      {/* Show loading state while profile data is being fetched */}
+      {!profile && user ? (
+        <Paper elevation={3} sx={{ p: 4, mb: 4, textAlign: 'center' }}>
+          <CircularProgress size={40} />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Loading profile data...
+          </Typography>
+        </Paper>
+      ) : (
+        <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+            <Typography variant="h6">Personal Information</Typography>
+            {!isEditing ? (
+              <IconButton
+                color="primary"
+                onClick={() => setIsEditing(true)}
+                aria-label="edit profile"
               >
-                <SaveIcon />
+                <EditIcon />
               </IconButton>
-              <IconButton 
-                onClick={() => {
-                  setIsEditing(false);
-                  setError('');
-                  setMessage('');
-                  // Reset form
-                  setFullName(profile.full_name || '');
-                }}
-                disabled={isLoading}
-                aria-label="cancel editing"
-              >
-                <CancelIcon />
-              </IconButton>
-            </Box>
-          )}
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={4}>
-          <Avatar 
-            sx={{ 
-              width: 80, 
-              height: 80, 
-              fontSize: '2rem',
-              bgcolor: 'primary.main',
-              mr: 3
-            }}
-          >
-            {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'U'}
-          </Avatar>
-          
-          <Box>
-            {isEditing ? (
-              <TextField
-                label="Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                variant="outlined"
-                size="small"
-                sx={{ mb: 1 }}
-                fullWidth
-              />
             ) : (
-              <Typography variant="h6">
-                {profile?.full_name || 'No name provided'}
-              </Typography>
+              <Box>
+                <IconButton
+                  color="primary"
+                  onClick={handleProfileUpdate}
+                  disabled={isLoading}
+                  aria-label="save changes"
+                >
+                  <SaveIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    setIsEditing(false);
+                    setError('');
+                    setMessage('');
+                    // Reset form
+                    setFullName(profile?.full_name || '');
+                  }}
+                  disabled={isLoading}
+                  aria-label="cancel editing"
+                >
+                  <CancelIcon />
+                </IconButton>
+              </Box>
             )}
-            <Typography variant="body2" color="text.secondary">
-              {email}
-            </Typography>
           </Box>
-        </Box>
 
-        <Divider sx={{ my: 3 }} />
+          <Box display="flex" alignItems="center" mb={4}>
+            <Avatar
+              sx={{
+                width: 80,
+                height: 80,
+                fontSize: '2rem',
+                bgcolor: 'primary.main',
+                mr: 3
+              }}
+            >
+              {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'U'}
+            </Avatar>
 
-        <Typography variant="h6" gutterBottom>
-          Change Password
-        </Typography>
-        
-        <Box component="form" onSubmit={handlePasswordUpdate} noValidate>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="currentPassword"
-            label="Current Password"
-            type="password"
-            id="currentPassword"
-            autoComplete="current-password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="newPassword"
-            label="New Password"
-            type="password"
-            id="newPassword"
-            autoComplete="new-password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="confirmPassword"
-            label="Confirm New Password"
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            sx={{ mb: 3 }}
-          />
-          
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={isLoading}
-            startIcon={isLoading ? <CircularProgress size={20} /> : null}
-          >
-            Update Password
-          </Button>
-        </Box>
-      </Paper>
-      
+            <Box>
+              {isEditing ? (
+                <TextField
+                  label="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 1 }}
+                  fullWidth
+                />
+              ) : (
+                <Typography variant="h6">
+                  {profile?.full_name || 'No name provided'}
+                </Typography>
+              )}
+              <Typography variant="body2" color="text.secondary">
+                {email}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 3 }} />
+
+          <Typography variant="h6" gutterBottom>
+            Change Password
+          </Typography>
+
+          <Box component="form" onSubmit={handlePasswordUpdate} noValidate>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="currentPassword"
+              label="Current Password"
+              type="password"
+              id="currentPassword"
+              autoComplete="current-password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="newPassword"
+              label="New Password"
+              type="password"
+              id="newPassword"
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm New Password"
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={20} /> : null}
+            >
+              Update Password
+            </Button>
+          </Box>
+        </Paper>
+      )}
+
       <Box textAlign="center" mt={4}>
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           color="error"
           onClick={handleSignOut}
           disabled={isLoading}

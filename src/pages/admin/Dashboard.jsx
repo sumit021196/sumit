@@ -34,7 +34,7 @@ import { supabase } from '../../supabaseClient';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [error, setError] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -44,23 +44,30 @@ const AdminDashboard = () => {
     adminUsers: 0
   });
   
-  const { user, profile } = useAuth();
+  const { user, profile, loading, initialCheckComplete } = useAuth();
   const navigate = useNavigate();
 
-  // Check if user is admin
+  // Check if user is admin - only after auth validation is complete
   useEffect(() => {
+    if (loading || !initialCheckComplete) return; // Wait for auth validation
+
+    if (!user) {
+      navigate('/');
+      return;
+    }
+
     if (profile?.role !== 'admin') {
       navigate('/');
     }
-  }, [profile, navigate]);
+  }, [profile, navigate, loading, initialCheckComplete, user]);
 
   // Fetch users and stats
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true);
-        
-        // Fetch users with their profiles
+        setUsersLoading(true);
+
+        // Fetch users with their profiles only (no admin API needed)
         const { data: usersData, error: usersError } = await supabase
           .from('profiles')
           .select('*')
@@ -68,42 +75,37 @@ const AdminDashboard = () => {
 
         if (usersError) throw usersError;
 
-        // Fetch auth users to get email and last sign in
-        const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-        if (authError) throw authError;
-
-        // Combine profile and auth data
-        const combinedUsers = usersData.map(profile => {
-          const authUser = authData.users.find(u => u.id === profile.id);
-          return {
-            ...profile,
-            email: authUser?.email || 'No email',
-            last_sign_in: authUser?.last_sign_in_at || null,
-            is_active: authUser?.last_sign_in_at ? true : false
-          };
-        });
+        // Since we can't access auth.admin.listUsers() in client-side,
+        // we'll work with profile data only
+        const combinedUsers = usersData.map(profile => ({
+          ...profile,
+          email: profile.email || 'No email',
+          last_sign_in: 'Not available',
+          is_active: true // Assume active if profile exists
+        }));
 
         setUsers(combinedUsers);
-        
+
         // Calculate stats
         setStats({
           totalUsers: combinedUsers.length,
-          activeUsers: combinedUsers.filter(u => u.is_active).length,
+          activeUsers: combinedUsers.length, // All profiles are considered active
           adminUsers: combinedUsers.filter(u => u.role === 'admin').length
         });
-        
+
       } catch (err) {
         console.error('Error fetching users:', err);
         setError('Failed to load user data');
       } finally {
-        setLoading(false);
+        setUsersLoading(false);
       }
     };
 
-    if (profile?.role === 'admin') {
+    // Only fetch users if user is admin and auth validation is complete
+    if (profile?.role === 'admin' && !loading && initialCheckComplete) {
       fetchUsers();
     }
-  }, [profile]);
+  }, [profile, loading, initialCheckComplete]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -142,12 +144,21 @@ const AdminDashboard = () => {
     return new Date(dateString).toLocaleString();
   };
 
-  if (loading) {
+  // Show loading spinner while auth is being validated or users are being fetched
+  if (loading || !initialCheckComplete || usersLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
         <CircularProgress />
+        <Typography variant="body1" sx={{ ml: 2 }}>
+          {loading || !initialCheckComplete ? 'Validating access...' : 'Loading dashboard...'}
+        </Typography>
       </Box>
     );
+  }
+
+  // Redirect if not authenticated or not admin
+  if (!user || profile?.role !== 'admin') {
+    return null; // Will redirect via useEffect
   }
 
   return (
@@ -233,7 +244,7 @@ const AdminDashboard = () => {
                 <TableCell>Email</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>Last Active</TableCell>
+                <TableCell>Joined</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -263,42 +274,38 @@ const AdminDashboard = () => {
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Chip 
-                        label={user.role || 'user'} 
+                      <Chip
+                        label={user.role || 'user'}
                         color={user.role === 'admin' ? 'primary' : 'default'}
                         size="small"
                         icon={user.role === 'admin' ? <AdminIcon fontSize="small" /> : null}
                       />
                     </TableCell>
                     <TableCell>
-                      <Chip 
-                        label={user.is_active ? 'Active' : 'Inactive'} 
-                        color={user.is_active ? 'success' : 'default'}
+                      <Chip
+                        label="Active"
+                        color="success"
                         size="small"
                       />
                     </TableCell>
-                    <TableCell>{formatDate(user.last_sign_in)}</TableCell>
+                    <TableCell>{formatDate(user.created_at)}</TableCell>
                     <TableCell align="right">
                       <Tooltip title="Edit User">
-                        <IconButton 
-                          size="small" 
+                        <IconButton
+                          size="small"
                           onClick={() => handleEditUser(user.id)}
                           color="primary"
                         >
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={user.is_active ? 'Deactivate User' : 'Activate User'}>
-                        <IconButton 
-                          size="small" 
+                      <Tooltip title="Deactivate User">
+                        <IconButton
+                          size="small"
                           onClick={() => toggleUserStatus(user.id, user.is_active)}
-                          color={user.is_active ? 'error' : 'success'}
+                          color="error"
                         >
-                          {user.is_active ? (
-                            <BlockIcon fontSize="small" />
-                          ) : (
-                            <CheckCircleIcon fontSize="small" />
-                          )}
+                          <BlockIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </TableCell>

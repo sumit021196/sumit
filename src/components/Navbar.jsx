@@ -65,7 +65,7 @@ function Navbar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading, initialCheckComplete, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
@@ -149,7 +149,8 @@ function Navbar() {
   );
 
   const renderAuthButtons = useCallback(() => {
-    if (loading) {
+    // Show loading spinner while auth is being validated
+    if (loading || !initialCheckComplete) {
       return (
         <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
           <CircularProgress size={24} color="inherit" />
@@ -170,8 +171,8 @@ function Navbar() {
             size="large"
           >
             {profile?.avatar_url ? (
-              <Avatar 
-                src={profile.avatar_url} 
+              <Avatar
+                src={profile.avatar_url}
                 alt={profile.full_name || 'User'}
                 sx={{ width: 32, height: 32 }}
               />
@@ -185,22 +186,22 @@ function Navbar() {
 
     return (
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <Button 
-          component={RouterLink} 
-          to="/login" 
+        <Button
+          component={RouterLink}
+          to="/login"
           color="inherit"
           startIcon={<Login />}
           sx={{ whiteSpace: 'nowrap' }}
         >
           Sign In
         </Button>
-        <Button 
-          component={RouterLink} 
-          to="/signup" 
-          variant="outlined" 
+        <Button
+          component={RouterLink}
+          to="/signup"
+          variant="outlined"
           color="inherit"
           startIcon={<PersonAdd />}
-          sx={{ 
+          sx={{
             borderColor: 'rgba(255, 255, 255, 0.5)',
             '&:hover': {
               borderColor: 'rgba(255, 255, 255, 0.8)',
@@ -213,7 +214,7 @@ function Navbar() {
         </Button>
       </Box>
     );
-  }, [user, profile, loading, menuId]);
+  }, [user, profile, loading, initialCheckComplete, menuId]);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', width: 280 }}>
@@ -234,7 +235,7 @@ function Navbar() {
           </ListItem>
         ))}
         
-        {!user && !loading && (
+        {!user && !loading && initialCheckComplete && (
           <>
             <Divider sx={{ my: 1 }} />
             {authItems.map((item) => (
