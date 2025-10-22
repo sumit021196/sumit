@@ -26,48 +26,56 @@ const NewsCard = ({ news, index }) => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'all 0.3s ease',
+          transition: 'all 0.2s ease',
           '&:hover': {
-            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             transform: 'translateY(-2px)',
           },
           cursor: 'pointer',
+          overflow: 'hidden',
+          borderRadius: 2,
         }}
         onClick={() => window.open(news.url, '_blank')}
       >
         <CardMedia
           component="img"
-          height="200"
+          height="140"
           image={news.image || 'https://via.placeholder.com/400x200/3f51b5/ffffff?text=News'}
           alt={news.title}
           sx={{
             objectFit: 'cover',
             transition: 'transform 0.3s ease',
             '&:hover': {
-              transform: 'scale(1.05)',
+              transform: 'scale(1.03)',
             },
           }}
         />
 
-        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
             <Chip
               label={news.source}
               size="small"
               color="primary"
               variant="outlined"
-              sx={{ mr: 1 }}
+              sx={{ 
+                height: 20,
+                '& .MuiChip-label': {
+                  px: 0.8,
+                  fontSize: '0.65rem',
+                }
+              }}
             />
-            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-              <ScheduleIcon sx={{ fontSize: 14, mr: 0.5 }} />
-              <Typography variant="caption">
+            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary', fontSize: '0.7rem' }}>
+              <ScheduleIcon sx={{ fontSize: '0.8rem', mr: 0.3, opacity: 0.7 }} />
+              <Typography variant="caption" sx={{ fontSize: '0.7rem', opacity: 0.8 }}>
                 {formatDate(news.publishedAt)}
               </Typography>
             </Box>
           </Box>
 
           <Typography
-            variant="h6"
+            variant="subtitle2"
             component="h3"
             sx={{
               fontWeight: 600,
@@ -77,7 +85,8 @@ const NewsCard = ({ news, index }) => {
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              minHeight: '3.2em',
+              minHeight: '2.6em',
+              fontSize: '0.9rem'
             }}
           >
             {news.title}
@@ -87,20 +96,31 @@ const NewsCard = ({ news, index }) => {
             variant="body2"
             color="text.secondary"
             sx={{
-              mb: 2,
+              mb: 1.5,
               flexGrow: 1,
               display: '-webkit-box',
-              WebkitLineClamp: 3,
+              WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              minHeight: '4.8em',
+              minHeight: '2.8em',
+              fontSize: '0.8rem',
+              lineHeight: 1.4,
+              opacity: 0.9
             }}
           >
             {news.summary}
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
-            <Typography variant="caption" color="text.secondary">
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mt: 'auto',
+            pt: 0.5,
+            borderTop: '1px solid',
+            borderColor: 'divider'
+          }}>
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem', opacity: 0.8 }}>
               {news.author ? `By ${news.author}` : 'News Article'}
             </Typography>
 
@@ -108,9 +128,10 @@ const NewsCard = ({ news, index }) => {
               size="small"
               sx={{
                 color: 'primary.main',
+                p: 0.5,
                 '&:hover': {
-                  backgroundColor: 'primary.main',
-                  color: 'white',
+                  backgroundColor: 'transparent',
+                  color: 'primary.dark',
                 },
               }}
               onClick={(e) => {
@@ -118,7 +139,7 @@ const NewsCard = ({ news, index }) => {
                 window.open(news.url, '_blank');
               }}
             >
-              <OpenInNewIcon fontSize="small" />
+              <OpenInNewIcon fontSize="inherit" sx={{ fontSize: '1rem' }} />
             </IconButton>
           </Box>
         </CardContent>

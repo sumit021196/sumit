@@ -1,8 +1,9 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider, Box, CircularProgress, CssBaseline } from '@mui/material';
+import { AuthProvider, useAuth } from './contexts/AuthProvider';
 import Navbar from './components/Navbar';
 import PageWrapper from './components/PageWrapper';
 import { WebsiteSchema, PersonSchema } from './components/StructuredData';
@@ -13,6 +14,45 @@ const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const Projects = lazy(() => import('./pages/Projects'));
 const Contact = lazy(() => import('./pages/contact'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Login = lazy(() => import('./pages/Login'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Profile = lazy(() => import('./pages/Profile'));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+
+// Protected Route component
+const ProtectedRoute = ({ children, requiredRole = null }) => {
+  const { user, role, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+// Admin Route component
+const AdminRoute = ({ children }) => (
+  <ProtectedRoute requiredRole="admin">
+    {children}
+  </ProtectedRoute>
+);
 
 // Loading component for Suspense fallback
 const Loading = () => (
@@ -26,20 +66,17 @@ const Loading = () => (
   </Box>
 );
 
-function App() {
+function AppContent() {
   const location = useLocation();
 
   return (
-    <HelmetProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Navbar />
-          <WebsiteSchema />
-          <PersonSchema />
-          <Suspense fallback={<Loading />}>
-            <AnimatePresence mode="wait">
-              <Routes location={location} key={location.pathname}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar />
+      <WebsiteSchema />
+      <PersonSchema />
+      <Suspense fallback={<Loading />}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
                 <Route 
                   path="/" 
                   element={
@@ -85,6 +122,25 @@ function App() {
                   } 
                 />
                 <Route 
+                  path="/faq" 
+                  element={
+                    <PageWrapper
+                      title="FAQ | Sumit - Full Stack Developer"
+                      description="Frequently asked questions about my services, technologies, and development process."
+                    >
+                      <FAQ />
+                    </PageWrapper>
+                  } 
+                />
+                <Route 
+                  path="/blog" 
+                  element={<Blog />}
+                />
+                <Route 
+                  path="/blog/:slug" 
+                  element={<BlogPost />}
+                />
+                <Route 
                   path="*" 
                   element={
                     <PageWrapper
@@ -98,13 +154,78 @@ function App() {
                     </PageWrapper>
                   } 
                 />
-              </Routes>
-            </AnimatePresence>
-          </Suspense>
-        </Box>
-      </ThemeProvider>
-    </HelmetProvider>
-  );
-}
+              <Route 
+                path="/login" 
+                element={
+                  <PageWrapper
+                    title="Sign In | Sumit - Full Stack Developer"
+                    description="Sign in to your account to access your profile and dashboard."
+                  >
+                    <Login />
+                  </PageWrapper>
+                } 
+              />
+              <Route 
+                path="/forgot-password" 
+                element={
+                  <PageWrapper
+                    title="Reset Password | Sumit - Full Stack Developer"
+                    description="Reset your password to regain access to your account."
+                  >
+                    <ForgotPassword />
+                  </PageWrapper>
+                } 
+              />
+              <Route 
+                path="/reset-password" 
+                element={
+                  <PageWrapper
+                    title="Set New Password | Sumit - Full Stack Developer"
+                    description="Set a new password for your account."
+                  >
+                    <ResetPassword />
+                  </PageWrapper>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <PageWrapper
+                      title="My Profile | Sumit - Full Stack Developer"
+                      description="View and manage your profile information."
+                    >
+                      <Profile />
+                    </PageWrapper>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/*" 
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } 
+              />
+            </Routes>
+          </AnimatePresence>
+        </Suspense>
+      </Box>
+    );
+  }
+  
+  function App() {
+    return (
+      <HelmetProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </ThemeProvider>
+      </HelmetProvider>
+    );
+  }
 
 export default App;

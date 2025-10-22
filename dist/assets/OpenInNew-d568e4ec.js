@@ -1,0 +1,2 @@
+import{i as r,j as t}from"./main-09baa353.js";import{r as a}from"./createSvgIcon-ccc8ebd0.js";var e={},o=r;Object.defineProperty(e,"__esModule",{value:!0});var u=e.default=void 0,i=o(a()),v=t;u=e.default=(0,i.default)((0,v.jsx)("path",{d:"M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"}),"OpenInNew");export{u as d};
+//# sourceMappingURL=OpenInNew-d568e4ec.js.map

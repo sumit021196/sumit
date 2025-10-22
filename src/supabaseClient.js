@@ -19,6 +19,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
+    detectSessionInUrl: true,
     flowType: 'pkce', // Use PKCE flow for better security
     storage: typeof window !== 'undefined' ? window.localStorage : null,
     storageKey: 'sb-auth-token',
@@ -76,6 +77,32 @@ export const signIn = (email, password) =>
 export const signOut = () => supabase.auth.signOut();
 
 export const getCurrentUser = () => supabase.auth.getUser();
+
+// Google OAuth Sign In
+export const signInWithGoogle = async () => {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+    
+    if (error) {
+      console.error('Google OAuth error:', error);
+      throw error;
+    }
+    
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error in signInWithGoogle:', error);
+    return { data: null, error };
+  }
+};
 
 export const submitContactForm = async (formData) => {
   try {

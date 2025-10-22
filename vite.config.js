@@ -9,6 +9,14 @@ export default defineConfig({
     port: 3000,
     open: true,
     strictPort: true,
+    host: true, // Listen on all addresses
+    hmr: {
+      port: 3001, // Separate HMR port to avoid conflicts
+    },
+    // Performance optimizations
+    fs: {
+      strict: false, // Allow serving files outside root
+    },
   },
   build: {
     outDir: 'dist',
@@ -24,5 +32,12 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', '@mui/material', '@emotion/react', '@emotion/styled'],
+  },
+  // Development performance optimizations
+  esbuild: {
+    target: 'esnext',
   },
 });

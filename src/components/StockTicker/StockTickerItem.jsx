@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { Box, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
@@ -10,105 +9,116 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
  * Follows Single Responsibility Principle
  * Responsive design for both ticker and grid layouts
  */
-export const StockTickerItem = memo(({ stock, index }) => {
+export const StockTickerItem = memo(({ stock }) => {
   const isPositive = stock.change >= 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.05,
-        ease: "easeOut"
-      }}
-      whileHover={{
-        scale: 1.02,
-        transition: { duration: 0.2 }
-      }}
+    <Box
       className="stock-ticker-item"
-      style={{
+      sx={{
         display: 'flex',
-        alignItems: 'center',
-        padding: '6px 10px',
-        margin: '0 2px',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        borderRadius: '6px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-        minWidth: { xs: '120px', sm: '140px' }, // More compact for mobile
-        maxWidth: { xs: '150px', sm: '180px' },
-        border: `1px solid ${isPositive ? 'rgba(76, 175, 80, 0.3)' : 'rgba(244, 67, 54, 0.3)'}`,
-        backdropFilter: 'blur(10px)',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        padding: { xs: '8px 10px', sm: '10px 14px' },
+        margin: '0 3px',
+        background: isPositive 
+          ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.02) 100%)'
+          : 'linear-gradient(135deg, rgba(244, 67, 54, 0.08) 0%, rgba(244, 67, 54, 0.02) 100%)',
+        borderRadius: '10px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+        minWidth: { xs: '120px', sm: '140px' },
+        width: { xs: '120px', sm: '140px' },
+        border: `1.5px solid ${isPositive ? 'rgba(76, 175, 80, 0.25)' : 'rgba(244, 67, 54, 0.25)'}`,
+        backdropFilter: 'blur(8px)',
+        flexShrink: 0,
+        transition: 'all 0.2s ease-out',
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
+          borderColor: isPositive ? 'rgba(76, 175, 80, 0.5)' : 'rgba(244, 67, 54, 0.5)',
+        },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '3px',
+          height: '100%',
+          background: isPositive 
+            ? 'linear-gradient(180deg, #4caf50 0%, #81c784 100%)'
+            : 'linear-gradient(180deg, #f44336 0%, #e57373 100%)',
+        },
+        // GPU acceleration
+        willChange: 'transform',
       }}
     >
-      {/* Stock Symbol */}
-      <Box sx={{ minWidth: { xs: '35px', sm: '45px' }, mr: { xs: 0.5, sm: 1 } }}>
+      {/* Top Row: Symbol & Change */}
+      <Box sx={{ 
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        mb: 0.5
+      }}>
+        {/* Stock Symbol */}
         <Typography
           variant="subtitle2"
           sx={{
-            fontWeight: 700,
-            color: 'primary.main',
-            fontSize: { xs: '0.75rem', sm: '0.8rem' }
+            fontWeight: 800,
+            color: 'text.primary',
+            fontSize: { xs: '0.75rem', sm: '0.8rem' },
+            letterSpacing: '0.3px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: '70%'
           }}
         >
           {stock.symbol}
         </Typography>
+        
+        {/* Change Percentage */}
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.3,
+          backgroundColor: isPositive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(244, 67, 54, 0.15)',
+          borderRadius: '4px',
+          px: 0.6,
+          py: 0.3
+        }}>
+          {isPositive ? <TrendingUpIcon sx={{ fontSize: 10, color: '#4caf50' }} /> : <TrendingDownIcon sx={{ fontSize: 10, color: '#f44336' }} />}
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: '0.65rem', sm: '0.7rem' },
+              color: isPositive ? '#2e7d32' : '#c62828',
+              lineHeight: 1
+            }}
+          >
+            {isPositive ? '+' : ''}{stock.change?.toFixed(2)}%
+          </Typography>
+        </Box>
       </Box>
 
-      {/* Company Name - Hidden in ticker, visible in grid */}
-      <Box sx={{
-        flex: 1,
-        mr: { xs: 1, sm: 2 },
-        display: 'none' // Hide company name completely from UI
-      }}>
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'text.secondary',
-            fontSize: { xs: '0.7rem', sm: '0.75rem' },
-            display: 'block',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {stock.name}
-        </Typography>
-      </Box>
-
-      {/* Price */}
-      <Box sx={{ minWidth: { xs: '50px', sm: '60px' }, mr: { xs: 0.5, sm: 0.5 } }}>
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 600,
-            color: 'text.primary',
-            fontSize: { xs: '0.75rem', sm: '0.8rem' }
-          }}
-        >
-          ₹{stock.price?.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
-        </Typography>
-      </Box>
-
-      {/* Change & Trend Icon */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        minWidth: { xs: '45px', sm: '50px' },
-        color: isPositive ? 'success.main' : 'error.main'
-      }}>
-        {isPositive ? <TrendingUpIcon sx={{ fontSize: { xs: 12, sm: 14 }, mr: 0.3 }} /> : <TrendingDownIcon sx={{ fontSize: { xs: 12, sm: 14 }, mr: 0.3 }} />}
-        <Typography
-          variant="caption"
-          sx={{
-            fontWeight: 600,
-            fontSize: { xs: '0.7rem', sm: '0.75rem' }
-          }}
-        >
-          {isPositive ? '+' : ''}{stock.change?.toFixed(2)}%
-        </Typography>
-      </Box>
-    </motion.div>
+      {/* Bottom Row: Price */}
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 700,
+          color: 'text.primary',
+          fontSize: { xs: '0.9rem', sm: '1rem' },
+          letterSpacing: '-0.5px',
+          lineHeight: 1,
+        }}
+      >
+        ₹{stock.price?.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+      </Typography>
+    </Box>
   );
 });
 

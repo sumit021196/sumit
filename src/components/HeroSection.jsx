@@ -18,14 +18,13 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import EmailIcon from '@mui/icons-material/Email';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 // Styled Components
 const StyledButton = ({ children, ...props }) => (
   <Button
     {...props}
     sx={{
-      padding: '12px 32px',
+      padding: { xs: '10px 24px', sm: '12px 28px' },
       borderRadius: '50px',
       fontWeight: 600,
       textTransform: 'none',
@@ -67,7 +66,7 @@ const HeroSection = () => {
     <Box
       component="section"
       sx={{
-        minHeight: '100vh',
+        minHeight: { xs: 'auto', md: '90vh' },
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
@@ -80,7 +79,7 @@ const HeroSection = () => {
           right: 0,
           bottom: 0,
           background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
-          zIndex: -1,
+          zIndex: -3,
         },
         '&::after': {
           content: '""',
@@ -92,12 +91,31 @@ const HeroSection = () => {
           background: 'url("/grid-pattern.svg")',
           opacity: 0.1,
           zIndex: -1,
+        },
+        '& .hero-bg-image': {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: -2,
+          opacity: 0.4,
         }
       }}
     >
+      <img
+        src="/profile.jpg"
+        alt="Background"
+        className="hero-bg-image"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = 'https://uqdprscrscskfadbsvxz.supabase.co/storage/v1/object/public/images/leh/khardungla.jpg';
+        }}
+      />
       <Container maxWidth="lg">
         <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sx={{ position: 'relative', zIndex: 1 }}>
             <motion.div
               initial="hidden"
               animate="visible"
@@ -120,7 +138,7 @@ const HeroSection = () => {
                 variant="h1"
                 component="h1"
                 sx={{
-                  fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+                  fontSize: { xs: '2.2rem', sm: '3rem', md: '3.5rem' },
                   fontWeight: 800,
                   lineHeight: 1.2,
                   mb: 2,
@@ -147,10 +165,10 @@ const HeroSection = () => {
                   cursor={true}
                   repeat={Infinity}
                   style={{
-                    fontSize: isMobile ? '1.25rem' : '1.5rem',
+                    fontSize: isMobile ? '1.1rem' : '1.3rem',
                     fontWeight: 500,
                     color: '#e0e0e0',
-                    height: '2.5rem',
+                    height: isMobile ? '1.8rem' : '2.2rem',
                     display: 'block',
                   }}
                 />
@@ -159,15 +177,15 @@ const HeroSection = () => {
                 variant="body1"
                 sx={{
                   color: 'rgba(255, 255, 255, 0.8)',
-                  fontSize: '1.1rem',
-                  mb: 4,
+                  fontSize: { xs: '1rem', sm: '1.1rem' },
+                  mb: { xs: 3, sm: 4 },
                   maxWidth: '600px',
                 }}
               >
                 I build exceptional digital experiences with modern technologies and clean code.
                 Let's create something amazing together!
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 4 }}>
+              <Box sx={{ display: 'flex', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap', mb: { xs: 3, sm: 4 } }}>
                 <StyledButton
                   component={Link}
                   to="/projects"
@@ -228,79 +246,9 @@ const HeroSection = () => {
             </motion.div>
           </Grid>
           <Grid item xs={12} md={6}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <Box
-                sx={{
-                  position: 'relative',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                  '&::before': {
-                    content: '""',
-                    display: 'block',
-                    paddingBottom: '125%',
-                  },
-                  '& img': {
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  },
-                }}
-              >
-                <img
-                  src="/profile.jpg"
-                  alt="Sumit - Full Stack Developer"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://uqdprscrscskfadbsvxz.supabase.co/storage/v1/object/public/images/leh/khardungla.jpg';
-                  }}
-                />
-              </Box>
-            </motion.div>
+            {/* This grid item is intentionally left empty for layout purposes */}
           </Grid>
         </Grid>
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: '40px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            textAlign: 'center',
-            color: 'white',
-            animation: 'bounce 2s infinite',
-            cursor: 'pointer',
-            '&:hover': {
-              color: theme.palette.primary.main,
-            },
-            '@keyframes bounce': {
-              '0%, 20%, 50%, 80%, 100%': {
-                transform: 'translateY(0) translateX(-50%)',
-              },
-              '40%': {
-                transform: 'translateY(-20px) translateX(-50%)',
-              },
-              '60%': {
-                transform: 'translateY(-10px) translateX(-50%)',
-              },
-            },
-          }}
-          onClick={() => {
-            window.scrollTo({
-              top: window.innerHeight,
-              behavior: 'smooth',
-            });
-          }}
-        >
-          <Typography variant="body2" sx={{ mb: 1 }}>Scroll Down</Typography>
-          <ArrowDownwardIcon />
-        </Box>
       </Container>
     </Box>
   );

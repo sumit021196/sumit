@@ -23,4 +23,12 @@ root.render(
 // If you want to measure performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals((metric) => {
+  // Log to console in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(metric);
+  }
+
+  // In production, you could send to analytics service
+  // Example: sendToAnalytics(metric);
+});
