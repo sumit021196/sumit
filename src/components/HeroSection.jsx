@@ -106,7 +106,7 @@ const HeroSection = () => {
       }}
     >
       <img
-        src="https://uqdprscrscskfadbsvxz.supabase.co/storage/v1/object/public/images/leh/khardungla.jpg"
+        src="/cover.jpg"
         alt="Background"
         className="hero-bg-image"
       />
