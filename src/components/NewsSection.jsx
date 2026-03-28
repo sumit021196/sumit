@@ -71,7 +71,7 @@ const NewsSection = () => {
   }
 
   return (
-    <Box sx={{ py: { xs: 3, md: 4 } }}>
+    <Box sx={{ py: { xs: 1.5, md: 4 } }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -83,9 +83,9 @@ const NewsSection = () => {
           component="h2"
           sx={{
             fontWeight: 700,
-            mb: 2,
+            mb: { xs: 1, md: 2 },
             textAlign: 'center',
-            fontSize: { xs: '1.4rem', md: '1.6rem' },
+            fontSize: { xs: '1.2rem', md: '1.6rem' },
             background: 'linear-gradient(90deg, #3f51b5 0%, #9c27b0 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -99,7 +99,7 @@ const NewsSection = () => {
           🌍 Latest Updates
         </Typography>
 
-        <Grid container spacing={{ xs: 1.5, sm: 2 }} justifyContent="center">
+        <Grid container spacing={{ xs: 1, sm: 2 }} justifyContent="center" sx={{ px: { xs: 1, sm: 0 } }}>
           {news.slice(0, 2).map((newsItem, index) => (
             <Grid item xs={12} sm={6} md={5} key={newsItem.id}>
               <NewsCard news={newsItem} index={index} />

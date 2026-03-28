@@ -66,11 +66,12 @@ const HeroSection = () => {
     <Box
       component="section"
       sx={{
-        minHeight: { xs: 'auto', md: '90vh' },
+        minHeight: { xs: '70vh', md: '90vh' },
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
+        py: { xs: 4, md: 0 },
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -138,10 +139,10 @@ const HeroSection = () => {
                 variant="h1"
                 component="h1"
                 sx={{
-                  fontSize: { xs: '2.2rem', sm: '3rem', md: '3.5rem' },
+                  fontSize: { xs: '1.8rem', sm: '3rem', md: '3.5rem' },
                   fontWeight: 800,
                   lineHeight: 1.2,
-                  mb: 2,
+                  mb: { xs: 1, sm: 2 },
                   background: 'linear-gradient(45deg, #fff 30%, #90caf9 90%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -149,7 +150,7 @@ const HeroSection = () => {
               >
                 Sumit
               </Typography>
-              <Box sx={{ mb: 4 }}>
+              <Box sx={{ mb: { xs: 2, sm: 4 } }}>
                 <TypeAnimation
                   sequence={[
                     'Full Stack Developer',
@@ -165,10 +166,10 @@ const HeroSection = () => {
                   cursor={true}
                   repeat={Infinity}
                   style={{
-                    fontSize: isMobile ? '1.1rem' : '1.3rem',
+                    fontSize: isMobile ? '1rem' : '1.3rem',
                     fontWeight: 500,
                     color: '#e0e0e0',
-                    height: isMobile ? '1.8rem' : '2.2rem',
+                    height: isMobile ? '1.5rem' : '2.2rem',
                     display: 'block',
                   }}
                 />
@@ -177,20 +178,20 @@ const HeroSection = () => {
                 variant="body1"
                 sx={{
                   color: 'rgba(255, 255, 255, 0.8)',
-                  fontSize: { xs: '1rem', sm: '1.1rem' },
-                  mb: { xs: 3, sm: 4 },
+                  fontSize: { xs: '0.9rem', sm: '1.1rem' },
+                  mb: { xs: 2, sm: 4 },
                   maxWidth: '600px',
                 }}
               >
                 I build exceptional digital experiences with modern technologies and clean code.
                 Let's create something amazing together!
               </Typography>
-              <Box sx={{ display: 'flex', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap', mb: { xs: 3, sm: 4 } }}>
+              <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', mb: { xs: 2, sm: 4 } }}>
                 <StyledButton
                   component={Link}
                   to="/projects"
                   variant="contained"
-                  size="large"
+                  size={isMobile ? "medium" : "large"}
                   startIcon={<CodeIcon />}
                 >
                   View My Work
@@ -199,7 +200,7 @@ const HeroSection = () => {
                   component={Link}
                   to="/contact"
                   variant="outlined"
-                  size="large"
+                  size={isMobile ? "medium" : "large"}
                   startIcon={<RocketLaunchIcon />}
                   sx={{
                     color: 'white',
@@ -213,7 +214,7 @@ const HeroSection = () => {
                   Contact Me
                 </StyledButton>
               </Box>
-              <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 } }}>
                 {socialLinks.map((social, index) => (
                   <motion.a
                     key={social.label}

@@ -20,15 +20,15 @@ export const StockTickerItem = memo(({ stock }) => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: { xs: '8px 10px', sm: '10px 14px' },
-        margin: '0 3px',
+        padding: { xs: '4px 8px', sm: '10px 14px' },
+        margin: { xs: '0 2px', sm: '0 3px' },
         background: isPositive 
           ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.02) 100%)'
           : 'linear-gradient(135deg, rgba(244, 67, 54, 0.08) 0%, rgba(244, 67, 54, 0.02) 100%)',
         borderRadius: '10px',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-        minWidth: { xs: '120px', sm: '140px' },
-        width: { xs: '120px', sm: '140px' },
+        minWidth: { xs: '100px', sm: '140px' },
+        width: { xs: '100px', sm: '140px' },
         border: `1.5px solid ${isPositive ? 'rgba(76, 175, 80, 0.25)' : 'rgba(244, 67, 54, 0.25)'}`,
         backdropFilter: 'blur(8px)',
         flexShrink: 0,
@@ -69,8 +69,8 @@ export const StockTickerItem = memo(({ stock }) => {
           sx={{
             fontWeight: 800,
             color: 'text.primary',
-            fontSize: { xs: '0.75rem', sm: '0.8rem' },
-            letterSpacing: '0.3px',
+            fontSize: { xs: '0.7rem', sm: '0.8rem' },
+            letterSpacing: '0.2px',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -95,7 +95,7 @@ export const StockTickerItem = memo(({ stock }) => {
             variant="caption"
             sx={{
               fontWeight: 700,
-              fontSize: { xs: '0.65rem', sm: '0.7rem' },
+              fontSize: { xs: '0.6rem', sm: '0.7rem' },
               color: isPositive ? '#2e7d32' : '#c62828',
               lineHeight: 1
             }}
@@ -111,8 +111,8 @@ export const StockTickerItem = memo(({ stock }) => {
         sx={{
           fontWeight: 700,
           color: 'text.primary',
-          fontSize: { xs: '0.9rem', sm: '1rem' },
-          letterSpacing: '-0.5px',
+          fontSize: { xs: '0.8rem', sm: '1rem' },
+          letterSpacing: '-0.3px',
           lineHeight: 1,
         }}
       >
