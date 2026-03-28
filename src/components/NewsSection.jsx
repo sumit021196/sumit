@@ -71,7 +71,7 @@ const NewsSection = () => {
   }
 
   return (
-    <Box sx={{ py: { xs: 1.5, md: 4 } }}>
+    <Box sx={{ py: { xs: 0, md: 2 } }}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

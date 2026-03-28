@@ -45,7 +45,7 @@ const StockTicker = ({
   };
 
   return (
-    <Box sx={{ py: { xs: 0.5, md: 2 }, backgroundColor: 'background.default' }}>
+    <Box sx={{ py: { xs: 0.5, md: 2 }, backgroundColor: 'transparent' }}>
       {/* Compact Header */}
       {showHeader && (
         <Box sx={{ mb: { xs: 0.5, md: 2 }, px: { xs: 1, md: 0 } }}>
@@ -183,28 +183,7 @@ const StockTicker = ({
           width: '100%',
           position: 'relative',
           py: { xs: 0.25, sm: 1 },
-          background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%)',
-          borderRadius: { xs: 0, sm: 1 },
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.3), transparent)',
-            zIndex: 1,
-          },
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.3), transparent)',
-            zIndex: 1,
-          }
+          background: 'transparent',
         }}
       >
         {/* Responsive Ticker Animation - Works on both desktop and mobile */}

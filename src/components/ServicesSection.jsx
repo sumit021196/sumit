@@ -28,15 +28,32 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
       alignItems: 'center',
       textAlign: 'center',
       borderRadius: '10px',
-      background: 'rgba(255, 255, 255, 0.02)',
-      backdropFilter: 'blur(8px)',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%)',
+      backdropFilter: 'blur(12px)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      position: 'relative',
+      overflow: 'hidden',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: '-100%',
+        width: '50%',
+        height: '100%',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+        transform: 'skewX(-20deg)',
+        transition: 'all 0.6s ease',
+      },
       '&:hover': {
-        transform: 'translateY(-3px)',
-        boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.1)}`,
-        borderColor: (theme) => alpha(theme.palette.primary.main, 0.3),
-        background: 'rgba(255, 255, 255, 0.05)',
+        transform: 'translateY(-10px) scale(1.02)',
+        boxShadow: (theme) => `0 20px 40px ${alpha(theme.palette.primary.main, 0.2)}`,
+        borderColor: (theme) => alpha(theme.palette.primary.light, 0.4),
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%)',
+        '&::before': {
+          left: '200%',
+        }
       },
       '& .MuiSvgIcon-root': {
         fontSize: { xs: '1.5rem', sm: '2.2rem' },
@@ -112,26 +129,7 @@ const ServicesSection = () => {
   ];
 
   return (
-    <Box
-      component="section"
-      id="services"
-      sx={{
-        py: { xs: 2, md: 6 },
-        backgroundColor: 'background.paper',
-        position: 'relative',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '40px',
-          background: 'linear-gradient(to bottom, rgba(15,12,41,1), rgba(15,12,41,0))',
-          transform: 'translateY(-99%)',
-          zIndex: 1,
-        },
-      }}
-    >
+    <Box component="section" id="services" sx={{ position: 'relative', zIndex: 2 }}>
       <Container maxWidth="lg">
         <Box textAlign="center" mb={{ xs: 2, sm: 4, md: 5 }}>
           <motion.div

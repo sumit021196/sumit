@@ -244,16 +244,16 @@ function Navbar() {
         </Typography>
       </Box>
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-      <List sx={{ pt: 2, px: 1 }}>
+      <List sx={{ pt: 1, px: 1 }}>
         {navItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+          <ListItem key={item.text} disablePadding sx={{ mb: 0 }}>
             <ListItemButton
               component={RouterLink}
               to={item.path}
               sx={{
                 textAlign: 'left',
-                px: 3,
-                py: 1.5,
+                px: 2,
+                py: 1,
                 borderRadius: 2,
                 transition: 'all 0.2s',
                 '&:hover': {
@@ -274,17 +274,17 @@ function Navbar() {
         ))}
         
         {!user && !loading && initialCheckComplete && (
-          <Box sx={{ mt: 2, px: 1 }}>
-            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+          <Box sx={{ mt: 1, px: 1 }}>
+            <Divider sx={{ my: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
             {authItems.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
+              <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton
                   component={RouterLink}
                   to={item.path}
                   sx={{
                     textAlign: 'left',
-                    px: 3,
-                    py: 1.5,
+                    px: 2,
+                    py: 1,
                     borderRadius: 2,
                     backgroundColor: item.text === 'Sign Up' ? 'rgba(33, 150, 243, 0.1)' : 'transparent',
                     border: item.text === 'Sign Up' ? '1px solid rgba(33, 150, 243, 0.3)' : 'none',
@@ -310,12 +310,12 @@ function Navbar() {
         )}
         
         {user && (
-          <Box sx={{ mt: 2, px: 1 }}>
-            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-            <ListItem disablePadding sx={{ mb: 0.5 }}>
+          <Box sx={{ mt: 1, px: 1 }}>
+            <Divider sx={{ my: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+            <ListItem disablePadding sx={{ mb: 0 }}>
               <ListItemButton
                 onClick={handleProfileClick}
-                sx={{ textAlign: 'left', px: 3, py: 1.5, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+                sx={{ textAlign: 'left', px: 2, py: 1, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
               >
                 <ListItemIcon sx={{ minWidth: 40, color: 'rgba(255, 255, 255, 0.7)' }}>
                   <Person />
@@ -324,13 +324,13 @@ function Navbar() {
               </ListItemButton>
             </ListItem>
             {profile?.role === 'admin' && (
-              <ListItem disablePadding sx={{ mb: 0.5 }}>
+              <ListItem disablePadding sx={{ mb: 0 }}>
                 <ListItemButton
                   onClick={() => {
                     handleMenuClose();
                     navigate('/admin');
                   }}
-                  sx={{ textAlign: 'left', px: 3, py: 1.5, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+                  sx={{ textAlign: 'left', px: 2, py: 1, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
                 >
                   <ListItemIcon sx={{ minWidth: 40, color: 'rgba(255, 255, 255, 0.7)' }}>
                     <AdminPanelSettings />
@@ -344,10 +344,10 @@ function Navbar() {
                 onClick={handleSignOut}
                 sx={{
                   textAlign: 'left',
-                  px: 3,
-                  py: 1.5,
+                  px: 2,
+                  py: 1,
                   borderRadius: 2,
-                  mt: 1,
+                  mt: 0.5,
                   backgroundColor: 'rgba(244, 67, 54, 0.1)',
                   color: '#ef5350',
                   '&:hover': {
