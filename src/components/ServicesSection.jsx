@@ -21,7 +21,7 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
     elevation={0}
     {...props}
     sx={{
-      padding: { xs: 1.5, sm: 2 },
+      padding: { xs: 1, sm: 2 },
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -39,8 +39,8 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
         background: 'rgba(255, 255, 255, 0.05)',
       },
       '& .MuiSvgIcon-root': {
-        fontSize: { xs: '1.8rem', sm: '2.2rem' },
-        mb: { xs: 0.75, sm: 1 },
+        fontSize: { xs: '1.5rem', sm: '2.2rem' },
+        mb: { xs: 0.5, sm: 1 },
         background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
@@ -50,8 +50,8 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
   >
     {React.cloneElement(icon, { 
       sx: { 
-        fontSize: { xs: '2rem', sm: '2.5rem' },
-        mb: { xs: 0.75, sm: 1 },
+        fontSize: { xs: '1.8rem', sm: '2.5rem' },
+        mb: { xs: 0.5, sm: 1 },
         background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent'
@@ -64,7 +64,7 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
       sx={{ 
         fontWeight: 600, 
         color: 'text.primary',
-        fontSize: { xs: '0.95rem', sm: '1rem' },
+        fontSize: { xs: '0.85rem', sm: '1rem' },
         mt: { xs: 0.5, sm: 1 },
         mb: { xs: 0.5, sm: 1 }
       }}
@@ -75,8 +75,8 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
       variant="body2" 
       color="text.secondary"
       sx={{
-        fontSize: { xs: '0.8rem', sm: '0.875rem' },
-        lineHeight: 1.5
+        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+        lineHeight: { xs: 1.3, sm: 1.5 }
       }}
     >
       {description}
@@ -116,7 +116,7 @@ const ServicesSection = () => {
       component="section"
       id="services"
       sx={{
-        py: { xs: 4, md: 6 },
+        py: { xs: 2, md: 6 },
         backgroundColor: 'background.paper',
         position: 'relative',
         '&::before': {
@@ -133,7 +133,7 @@ const ServicesSection = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Box textAlign="center" mb={{ xs: 3, sm: 4, md: 5 }}>
+        <Box textAlign="center" mb={{ xs: 2, sm: 4, md: 5 }}>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ const ServicesSection = () => {
                 background: 'linear-gradient(45deg, #1976d2 30%, #21CBF3 90%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontSize: { xs: '1.5rem', sm: '2rem' },
+                fontSize: { xs: '1.2rem', sm: '2rem' },
                 lineHeight: 1.2
               }}
             >
@@ -184,7 +184,7 @@ const ServicesSection = () => {
           </motion.div>
         </Box>
 
-        <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
+        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
           {services.map((service, index) => (
             <Grid item xs={6} sm={6} md={3} key={index}>
               <motion.div

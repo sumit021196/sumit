@@ -45,10 +45,10 @@ const StockTicker = ({
   };
 
   return (
-    <Box sx={{ py: { xs: 1, md: 2 }, backgroundColor: 'background.default' }}>
+    <Box sx={{ py: { xs: 0.5, md: 2 }, backgroundColor: 'background.default' }}>
       {/* Compact Header */}
       {showHeader && (
-        <Box sx={{ mb: { xs: 1, md: 2 }, px: { xs: 1, md: 0 } }}>
+        <Box sx={{ mb: { xs: 0.5, md: 2 }, px: { xs: 1, md: 0 } }}>
           <Fade in timeout={600}>
             <Box>
               {/* Title & Status Row */}
@@ -68,7 +68,7 @@ const StockTicker = ({
                     background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    fontSize: { xs: '1rem', sm: '1.2rem' },
+                    fontSize: { xs: '0.9rem', sm: '1.2rem' },
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5
@@ -110,18 +110,18 @@ const StockTicker = ({
               </Box>
               
               {/* Compact Controls */}
-              <Box sx={{ display: 'flex', gap: 0.5, mt: 1 }}>
+              <Box sx={{ display: 'flex', gap: 0.5, mt: { xs: 0.5, sm: 1 } }}>
                 <Button
                   variant="outlined"
                   size="small"
-                  startIcon={<RefreshIcon sx={{ fontSize: 14 }} />}
+                  startIcon={<RefreshIcon sx={{ fontSize: 12 }} />}
                   onClick={handleRefresh}
                   disabled={!isConnected && stocks.length === 0}
                   sx={{ 
                     borderRadius: 2,
-                    py: 0.3,
-                    px: 1,
-                    fontSize: { xs: '0.6rem', sm: '0.65rem' },
+                    py: { xs: 0.1, sm: 0.3 },
+                    px: { xs: 0.5, sm: 1 },
+                    fontSize: { xs: '0.55rem', sm: '0.65rem' },
                     minWidth: 'auto'
                   }}
                 >
@@ -133,9 +133,9 @@ const StockTicker = ({
                   onClick={handlePauseToggle}
                   sx={{ 
                     borderRadius: 2,
-                    py: 0.3,
-                    px: 1,
-                    fontSize: { xs: '0.6rem', sm: '0.65rem' },
+                    py: { xs: 0.1, sm: 0.3 },
+                    px: { xs: 0.5, sm: 1 },
+                    fontSize: { xs: '0.55rem', sm: '0.65rem' },
                     minWidth: 'auto'
                   }}
                 >
@@ -182,7 +182,7 @@ const StockTicker = ({
           overflow: 'hidden',
           width: '100%',
           position: 'relative',
-          py: { xs: 0.5, sm: 1 },
+          py: { xs: 0.25, sm: 1 },
           background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%)',
           borderRadius: { xs: 0, sm: 1 },
           '&::before': {
@@ -261,7 +261,7 @@ const StockTicker = ({
       {/* Bottom Info */}
       <Box sx={{
         textAlign: 'center',
-        mt: { xs: 1, sm: 1.5 },
+        mt: { xs: 0.5, sm: 1.5 },
         px: 1
       }}>
         <Typography 

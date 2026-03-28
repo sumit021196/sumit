@@ -39,19 +39,19 @@ const NewsCard = ({ news, index }) => {
       >
         <CardMedia
           component="img"
-          height="140"
-          image={news.image || 'https://via.placeholder.com/400x200/3f51b5/ffffff?text=News'}
-          alt={news.title}
           sx={{
+            height: { xs: 100, sm: 140 },
             objectFit: 'cover',
             transition: 'transform 0.3s ease',
             '&:hover': {
               transform: 'scale(1.03)',
             },
           }}
+          image={news.image || 'https://via.placeholder.com/400x200/3f51b5/ffffff?text=News'}
+          alt={news.title}
         />
 
-        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
             <Chip
               label={news.source}
@@ -79,14 +79,14 @@ const NewsCard = ({ news, index }) => {
             component="h3"
             sx={{
               fontWeight: 600,
-              mb: 1,
+              mb: 0.5,
               lineHeight: 1.3,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               minHeight: '2.6em',
-              fontSize: '0.9rem'
+              fontSize: { xs: '0.85rem', sm: '0.9rem' }
             }}
           >
             {news.title}
@@ -96,14 +96,14 @@ const NewsCard = ({ news, index }) => {
             variant="body2"
             color="text.secondary"
             sx={{
-              mb: 1.5,
+              mb: 1,
               flexGrow: 1,
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               minHeight: '2.8em',
-              fontSize: '0.8rem',
+              fontSize: { xs: '0.75rem', sm: '0.8rem' },
               lineHeight: 1.4,
               opacity: 0.9
             }}
