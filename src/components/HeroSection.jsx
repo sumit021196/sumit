@@ -150,70 +150,91 @@ const HeroSection = () => {
               >
                 Sumit
               </Typography>
-              <Box sx={{ mb: { xs: 2, sm: 4 } }}>
-                <TypeAnimation
-                  sequence={[
-                    'Full Stack Developer',
-                    1500,
-                    'UI/UX Enthusiast',
-                    1500,
-                    'Problem Solver',
-                    1500,
-                    'Tech Geek',
-                    1500,
-                  ]}
-                  wrapper="div"
-                  cursor={true}
-                  repeat={Infinity}
-                  style={{
-                    fontSize: isMobile ? '1rem' : '1.3rem',
-                    fontWeight: 500,
-                    color: '#e0e0e0',
-                    height: isMobile ? '1.5rem' : '2.2rem',
-                    display: 'block',
-                  }}
-                />
-              </Box>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  fontSize: { xs: '0.9rem', sm: '1.1rem' },
-                  mb: { xs: 2, sm: 4 },
-                  maxWidth: '600px',
-                }}
+              <motion.div
+                custom={1}
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
               >
-                I build exceptional digital experiences with modern technologies and clean code.
-                Let's create something amazing together!
-              </Typography>
-              <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', mb: { xs: 2, sm: 4 } }}>
-                <StyledButton
-                  component={Link}
-                  to="/projects"
-                  variant="contained"
-                  size={isMobile ? "medium" : "large"}
-                  startIcon={<CodeIcon />}
-                >
-                  View My Work
-                </StyledButton>
-                <StyledButton
-                  component={Link}
-                  to="/contact"
-                  variant="outlined"
-                  size={isMobile ? "medium" : "large"}
-                  startIcon={<RocketLaunchIcon />}
+                <Box sx={{ mb: { xs: 2, sm: 4 } }}>
+                  <TypeAnimation
+                    sequence={[
+                      'Full Stack Developer',
+                      1500,
+                      'UI/UX Enthusiast',
+                      1500,
+                      'Problem Solver',
+                      1500,
+                      'Tech Geek',
+                      1500,
+                    ]}
+                    wrapper="div"
+                    cursor={true}
+                    repeat={Infinity}
+                    style={{
+                      fontSize: isMobile ? '1rem' : '1.3rem',
+                      fontWeight: 500,
+                      color: '#e0e0e0',
+                      height: isMobile ? '1.5rem' : '2.2rem',
+                      display: 'block',
+                    }}
+                  />
+                </Box>
+              </motion.div>
+              <motion.div
+                custom={2}
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+              >
+                <Typography
+                  variant="body1"
                   sx={{
-                    color: 'white',
-                    borderColor: 'rgba(255, 255, 255, 0.2)',
-                    '&:hover': {
-                      borderColor: 'white',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                    }
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: { xs: '0.9rem', sm: '1.1rem' },
+                    mb: { xs: 2, sm: 4 },
+                    maxWidth: '600px',
                   }}
                 >
-                  Contact Me
-                </StyledButton>
-              </Box>
+                  I build exceptional digital experiences with modern technologies and clean code.
+                  Let's create something amazing together!
+                </Typography>
+              </motion.div>
+              <motion.div
+                custom={3}
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+              >
+                <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', mb: { xs: 2, sm: 4 } }}>
+                  <StyledButton
+                    component={Link}
+                    to="/projects"
+                    variant="contained"
+                    size={isMobile ? "medium" : "large"}
+                    startIcon={<CodeIcon />}
+                  >
+                    View My Work
+                  </StyledButton>
+                  <StyledButton
+                    component={Link}
+                    to="/contact"
+                    variant="outlined"
+                    size={isMobile ? "medium" : "large"}
+                    startIcon={<RocketLaunchIcon />}
+                    sx={{
+                      color: 'white',
+                      borderColor: 'rgba(255, 255, 255, 0.2)',
+                      '&:hover': {
+                        borderColor: 'white',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                      }
+                    }}
+                  >
+                    Contact Me
+                  </StyledButton>
+                </Box>
+              </motion.div>
               <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 } }}>
                 {socialLinks.map((social, index) => (
                   <motion.a
@@ -224,7 +245,7 @@ const HeroSection = () => {
                     style={{ color: 'white' }}
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.95 }}
-                    custom={index + 2}
+                    custom={index + 4}
                     variants={fadeInUp}
                     initial="hidden"
                     animate="visible"

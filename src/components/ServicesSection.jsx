@@ -135,10 +135,10 @@ const ServicesSection = () => {
       <Container maxWidth="lg">
         <Box textAlign="center" mb={{ xs: 2, sm: 4, md: 5 }}>
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6 }}
           >
             <Typography
               variant="overline"
@@ -188,10 +188,11 @@ const ServicesSection = () => {
           {services.map((service, index) => (
             <Grid item xs={6} sm={6} md={3} key={index}>
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
               >
                 <ServiceCard
                   icon={service.icon}

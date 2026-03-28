@@ -217,86 +217,151 @@ function Navbar() {
   }, [user, profile, loading, initialCheckComplete, menuId]);
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', width: 280 }}>
-      <Typography variant="h6" sx={{ my: 2, fontWeight: 700 }}>
-        Sumit's Portfolio
-      </Typography>
-      <Divider />
-      <List>
+    <Box
+      onClick={handleDrawerToggle}
+      sx={{
+        textAlign: 'center',
+        width: 280,
+        height: '100%',
+        background: 'linear-gradient(180deg, rgba(15, 12, 41, 0.95) 0%, rgba(48, 43, 99, 0.95) 100%)',
+        backdropFilter: 'blur(20px)',
+        color: 'white',
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+      }}
+    >
+      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 800,
+            background: 'linear-gradient(45deg, #fff 30%, #90caf9 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.5px'
+          }}
+        >
+          Sumit's Portfolio
+        </Typography>
+      </Box>
+      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+      <List sx={{ pt: 2, px: 1 }}>
         {navItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
+          <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
               component={RouterLink}
               to={item.path}
-              sx={{ textAlign: 'left', px: 3 }}
+              sx={{
+                textAlign: 'left',
+                px: 3,
+                py: 1.5,
+                borderRadius: 2,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  transform: 'translateX(4px)'
+                }
+              }}
             >
-              <ListItemText primary={item.text} />
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontWeight: 500,
+                  fontSize: '1rem'
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
         
         {!user && !loading && initialCheckComplete && (
-          <>
-            <Divider sx={{ my: 1 }} />
+          <Box sx={{ mt: 2, px: 1 }}>
+            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
             {authItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
+              <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
                 <ListItemButton
                   component={RouterLink}
                   to={item.path}
-                  sx={{ textAlign: 'left', px: 3 }}
+                  sx={{
+                    textAlign: 'left',
+                    px: 3,
+                    py: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: item.text === 'Sign Up' ? 'rgba(33, 150, 243, 0.1)' : 'transparent',
+                    border: item.text === 'Sign Up' ? '1px solid rgba(33, 150, 243, 0.3)' : 'none',
+                    '&:hover': {
+                      backgroundColor: item.text === 'Sign Up' ? 'rgba(33, 150, 243, 0.2)' : 'rgba(255, 255, 255, 0.1)'
+                    }
+                  }}
                 >
-                  <ListItemIcon sx={{ minWidth: 40 }}>
+                  <ListItemIcon sx={{ minWidth: 40, color: item.text === 'Sign Up' ? '#90caf9' : 'rgba(255, 255, 255, 0.7)' }}>
                     {item.icon}
                   </ListItemIcon>
-                  <ListItemText primary={item.text} />
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      fontWeight: 500,
+                      color: item.text === 'Sign Up' ? '#90caf9' : 'rgba(255, 255, 255, 0.9)'
+                    }}
+                  />
                 </ListItemButton>
               </ListItem>
             ))}
-          </>
+          </Box>
         )}
         
         {user && (
-          <>
-            <Divider sx={{ my: 1 }} />
-            <ListItem disablePadding>
+          <Box sx={{ mt: 2, px: 1 }}>
+            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+            <ListItem disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
                 onClick={handleProfileClick}
-                sx={{ textAlign: 'left', px: 3 }}
+                sx={{ textAlign: 'left', px: 3, py: 1.5, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
               >
-                <ListItemIcon sx={{ minWidth: 40 }}>
+                <ListItemIcon sx={{ minWidth: 40, color: 'rgba(255, 255, 255, 0.7)' }}>
                   <Person />
                 </ListItemIcon>
-                <ListItemText primary="My Profile" />
+                <ListItemText primary="My Profile" primaryTypographyProps={{ fontWeight: 500 }} />
               </ListItemButton>
             </ListItem>
             {profile?.role === 'admin' && (
-              <ListItem disablePadding>
+              <ListItem disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton
                   onClick={() => {
                     handleMenuClose();
                     navigate('/admin');
                   }}
-                  sx={{ textAlign: 'left', px: 3 }}
+                  sx={{ textAlign: 'left', px: 3, py: 1.5, borderRadius: 2, '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
                 >
-                  <ListItemIcon sx={{ minWidth: 40 }}>
+                  <ListItemIcon sx={{ minWidth: 40, color: 'rgba(255, 255, 255, 0.7)' }}>
                     <AdminPanelSettings />
                   </ListItemIcon>
-                  <ListItemText primary="Admin Panel" />
+                  <ListItemText primary="Admin Panel" primaryTypographyProps={{ fontWeight: 500 }} />
                 </ListItemButton>
               </ListItem>
             )}
             <ListItem disablePadding>
               <ListItemButton
                 onClick={handleSignOut}
-                sx={{ textAlign: 'left', px: 3, color: theme.palette.error.main }}
+                sx={{
+                  textAlign: 'left',
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: 2,
+                  mt: 1,
+                  backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                  color: '#ef5350',
+                  '&:hover': {
+                    backgroundColor: 'rgba(244, 67, 54, 0.2)'
+                  }
+                }}
               >
                 <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>
                   <Logout />
                 </ListItemIcon>
-                <ListItemText primary="Sign Out" />
+                <ListItemText primary="Sign Out" primaryTypographyProps={{ fontWeight: 600 }} />
               </ListItemButton>
             </ListItem>
-          </>
+          </Box>
         )}
       </List>
     </Box>
@@ -305,26 +370,41 @@ function Navbar() {
   return (
     <>
       <HideOnScroll>
-        <AppBar>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
+        <AppBar
+          elevation={0}
+          sx={{
+            background: 'rgba(15, 12, 41, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        >
+          <Toolbar sx={{ minHeight: { xs: 56, sm: 64 }, px: { xs: 1, sm: 2 } }}>
+            {isMobile && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: { xs: 0.5, sm: 2 }, p: 1 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography
               variant="h6"
               component={RouterLink}
               to="/"
               sx={{
                 flexGrow: 1,
-                fontWeight: 700,
+                fontWeight: 800,
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
                 color: 'inherit',
                 textDecoration: 'none',
+                background: 'linear-gradient(45deg, #fff 30%, #90caf9 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '-0.5px',
+                ml: { xs: 0.5, sm: 0 },
                 '&:hover': {
                   opacity: 0.9
                 }
@@ -332,7 +412,7 @@ function Navbar() {
             >
               Sumit's Portfolio
             </Typography>
-            {!isMobile && (
+            {!isMobile ? (
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ display: 'flex', mr: 1 }}>
                   {navItems.map((item) => (
@@ -341,12 +421,17 @@ function Navbar() {
                       component={RouterLink}
                       to={item.path}
                       sx={{ 
-                        color: '#fff',
+                        color: 'rgba(255, 255, 255, 0.8)',
                         mx: 0.5,
                         px: 1.5,
                         minWidth: 'auto',
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        transition: 'all 0.2s',
                         '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.08)'
+                          color: '#fff',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          transform: 'translateY(-1px)'
                         }
                       }}
                     >
@@ -358,8 +443,11 @@ function Navbar() {
                   {renderAuthButtons()}
                 </Box>
               </Box>
+            ) : (
+              <Box sx={{ transform: 'scale(0.85)', transformOrigin: 'right center' }}>
+                {renderAuthButtons()}
+              </Box>
             )}
-            {isMobile && renderAuthButtons()}
           </Toolbar>
         </AppBar>
       </HideOnScroll>
