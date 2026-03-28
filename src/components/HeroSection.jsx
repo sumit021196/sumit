@@ -79,7 +79,7 @@ const HeroSection = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+          background: 'linear-gradient(135deg, #5D4037 0%, #A1887F 50%, #8D6E63 100%)',
           zIndex: -3,
         },
         '&::after': {
@@ -127,8 +127,8 @@ const HeroSection = () => {
                 variant="overline"
                 sx={{
                   display: 'inline-block',
-                  mb: 2,
-                  color: 'primary.main',
+                  mb: 1,
+                  color: 'secondary.light',
                   fontWeight: 600,
                   letterSpacing: 2,
                 }}
@@ -143,14 +143,14 @@ const HeroSection = () => {
                   fontWeight: 800,
                   lineHeight: 1.2,
                   mb: { xs: 1, sm: 2 },
-                  background: 'linear-gradient(45deg, #fff 30%, #90caf9 90%)',
+                  background: 'linear-gradient(45deg, #FFF8DC 30%, #D7CCC8 90%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
               >
                 Sumit
               </Typography>
-              <Box sx={{ mb: { xs: 2, sm: 4 } }}>
+              <Box sx={{ mb: { xs: 1.5, sm: 4 } }}>
                 <TypeAnimation
                   sequence={[
                     'Full Stack Developer',
@@ -166,10 +166,10 @@ const HeroSection = () => {
                   cursor={true}
                   repeat={Infinity}
                   style={{
-                    fontSize: isMobile ? '1rem' : '1.3rem',
+                    fontSize: isMobile ? '0.9rem' : '1.3rem',
                     fontWeight: 500,
-                    color: '#e0e0e0',
-                    height: isMobile ? '1.5rem' : '2.2rem',
+                    color: '#EFEBE9',
+                    height: isMobile ? '1.2rem' : '2.2rem',
                     display: 'block',
                   }}
                 />
@@ -177,8 +177,8 @@ const HeroSection = () => {
               <Typography
                 variant="body1"
                 sx={{
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  fontSize: { xs: '0.9rem', sm: '1.1rem' },
+                  color: 'rgba(255, 255, 255, 0.85)',
+                  fontSize: { xs: '0.85rem', sm: '1.1rem' },
                   mb: { xs: 2, sm: 4 },
                   maxWidth: '600px',
                 }}
