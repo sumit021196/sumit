@@ -1,0 +1,18 @@
+
+> sumit-portfolio@1.0.0 dev
+> vite
+
+
+  VITE v4.5.14  ready in 513 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.0.2:3000/
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+3:22:16 PM [vite] hmr update /src/components/Navbar.jsx
+3:23:00 PM [vite] hmr update /src/components/HeroSection.jsx
+3:23:23 PM [vite] hmr update /src/components/ServicesSection.jsx
+3:30:00 PM [vite] hmr update /src/components/HeroSection.jsx
+4:46:45 PM [vite] hmr update /src/pages/Home.jsx
+4:47:39 PM [vite] ✨ new dependencies optimized: @mui/icons-material/Instagram
+4:47:39 PM [vite] ✨ optimized dependencies changed. reloading
+4:54:35 PM [vite] hmr update /src/components/InstagramSection.jsx

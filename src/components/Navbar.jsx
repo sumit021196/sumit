@@ -305,14 +305,21 @@ function Navbar() {
   return (
     <>
       <HideOnScroll>
-        <AppBar>
-          <Toolbar>
+        <AppBar
+          sx={{
+            background: 'rgba(93, 64, 55, 0.9)',
+            backdropFilter: 'blur(10px)',
+            boxShadow: 'none',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <Toolbar sx={{ minHeight: { xs: '56px', sm: '64px' }, px: { xs: 1, sm: 2 } }}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 1, display: { md: 'none' } }}
             >
               <MenuIcon />
             </IconButton>
@@ -323,8 +330,9 @@ function Navbar() {
               sx={{
                 flexGrow: 1,
                 fontWeight: 700,
-                color: 'inherit',
+                color: 'secondary.main',
                 textDecoration: 'none',
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
                 '&:hover': {
                   opacity: 0.9
                 }
@@ -341,12 +349,14 @@ function Navbar() {
                       component={RouterLink}
                       to={item.path}
                       sx={{ 
-                        color: '#fff',
+                        color: 'secondary.light',
                         mx: 0.5,
                         px: 1.5,
                         minWidth: 'auto',
+                        fontSize: '0.9rem',
                         '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.08)'
+                          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                          color: '#fff'
                         }
                       }}
                     >
@@ -373,17 +383,18 @@ function Navbar() {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: 250,
+              backgroundColor: 'background.paper',
             },
           }}
         >
           {drawer}
         </Drawer>
       </Box>
-      <Toolbar /> {/* This pushes content below the fixed AppBar */}
+      <Toolbar sx={{ minHeight: { xs: '56px', sm: '64px' } }} /> {/* This pushes content below the fixed AppBar */}
     </>
   );
 }

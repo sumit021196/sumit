@@ -79,7 +79,7 @@ const HeroSection = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+          background: 'linear-gradient(135deg, #5D4037 0%, #A1887F 50%, #8D6E63 100%)',
           zIndex: -3,
         },
         '&::after': {
@@ -101,153 +101,166 @@ const HeroSection = () => {
           height: '100%',
           objectFit: 'cover',
           zIndex: -2,
-          opacity: 0.4,
+          opacity: 0.25,
         }
       }}
     >
       <img
-        src="/profile.jpg"
+        src="/cover.jpg"
         alt="Background"
         className="hero-bg-image"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = 'https://uqdprscrscskfadbsvxz.supabase.co/storage/v1/object/public/images/leh/khardungla.jpg';
-        }}
       />
-      <Container maxWidth="lg">
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6} sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="lg" sx={{ zIndex: 1 }}>
+        <Grid container spacing={4} alignItems="center" justifyContent="center">
+          <Grid item xs={12} md={8} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
             <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeInUp}
               custom={0}
             >
-              <Typography
-                variant="overline"
+              <Box
                 sx={{
-                  display: 'inline-block',
-                  mb: 2,
-                  color: 'primary.main',
-                  fontWeight: 600,
-                  letterSpacing: 2,
+                  background: 'rgba(93, 64, 55, 0.4)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '16px',
+                  padding: { xs: '20px', sm: '40px' },
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3)'
                 }}
               >
-                Hello, I'm
-              </Typography>
-              <Typography
-                variant="h1"
-                component="h1"
-                sx={{
-                  fontSize: { xs: '1.8rem', sm: '3rem', md: '3.5rem' },
-                  fontWeight: 800,
-                  lineHeight: 1.2,
-                  mb: { xs: 1, sm: 2 },
-                  background: 'linear-gradient(45deg, #fff 30%, #90caf9 90%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Sumit
-              </Typography>
-              <Box sx={{ mb: { xs: 2, sm: 4 } }}>
-                <TypeAnimation
-                  sequence={[
-                    'Full Stack Developer',
-                    1500,
-                    'UI/UX Enthusiast',
-                    1500,
-                    'Problem Solver',
-                    1500,
-                    'Tech Geek',
-                    1500,
-                  ]}
-                  wrapper="div"
-                  cursor={true}
-                  repeat={Infinity}
-                  style={{
-                    fontSize: isMobile ? '1rem' : '1.3rem',
-                    fontWeight: 500,
-                    color: '#e0e0e0',
-                    height: isMobile ? '1.5rem' : '2.2rem',
-                    display: 'block',
+                <Typography
+                  variant="overline"
+                  sx={{
+                    display: 'inline-block',
+                    mb: 1,
+                    color: '#FFF8DC', // Cream
+                    fontWeight: 600,
+                    letterSpacing: 2,
+                    fontSize: { xs: '0.8rem', sm: '1rem' }
                   }}
-                />
-              </Box>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  fontSize: { xs: '0.9rem', sm: '1.1rem' },
-                  mb: { xs: 2, sm: 4 },
-                  maxWidth: '600px',
-                }}
-              >
+                >
+                  Hello, I'm
+                </Typography>
+                <Typography
+                  variant="h1"
+                  component="h1"
+                  sx={{
+                    fontSize: { xs: '2.2rem', sm: '3.5rem', md: '4.5rem' },
+                    fontWeight: 800,
+                    lineHeight: 1.2,
+                    mb: { xs: 1, sm: 2 },
+                    background: 'linear-gradient(45deg, #FFF8DC 30%, #D7CCC8 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Sumit
+                </Typography>
+                <Box sx={{ mb: { xs: 2, sm: 4 } }}>
+                  <TypeAnimation
+                    sequence={[
+                      'Full Stack Developer',
+                      1500,
+                      'UI/UX Enthusiast',
+                      1500,
+                      'Problem Solver',
+                      1500,
+                      'Tech Geek',
+                      1500,
+                    ]}
+                    wrapper="div"
+                    cursor={true}
+                    repeat={Infinity}
+                    style={{
+                      fontSize: isMobile ? '1.1rem' : '1.5rem',
+                      fontWeight: 500,
+                      color: '#EFEBE9',
+                      height: isMobile ? '1.5rem' : '2.2rem',
+                      display: 'block',
+                    }}
+                  />
+                </Box>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: { xs: '0.95rem', sm: '1.2rem' },
+                    mb: { xs: 3, sm: 5 },
+                    maxWidth: '600px',
+                    mx: { xs: 'auto', md: 0 }
+                  }}
+                >
                 I build exceptional digital experiences with modern technologies and clean code.
                 Let's create something amazing together!
               </Typography>
-              <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, flexWrap: 'wrap', mb: { xs: 2, sm: 4 } }}>
-                <StyledButton
-                  component={Link}
-                  to="/projects"
-                  variant="contained"
-                  size={isMobile ? "medium" : "large"}
-                  startIcon={<CodeIcon />}
-                >
-                  View My Work
-                </StyledButton>
-                <StyledButton
-                  component={Link}
-                  to="/contact"
-                  variant="outlined"
-                  size={isMobile ? "medium" : "large"}
-                  startIcon={<RocketLaunchIcon />}
-                  sx={{
-                    color: 'white',
-                    borderColor: 'rgba(255, 255, 255, 0.2)',
-                    '&:hover': {
-                      borderColor: 'white',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                    }
-                  }}
-                >
-                  Contact Me
-                </StyledButton>
-              </Box>
-              <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 } }}>
-                {socialLinks.map((social, index) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: 'white' }}
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    custom={index + 2}
-                    variants={fadeInUp}
-                    initial="hidden"
-                    animate="visible"
+                <Box sx={{ display: 'flex', gap: { xs: 2, sm: 3 }, flexWrap: 'wrap', mb: { xs: 3, sm: 5 }, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  <StyledButton
+                    component={Link}
+                    to="/projects"
+                    variant="contained"
+                    size={isMobile ? "medium" : "large"}
+                    startIcon={<CodeIcon />}
+                    sx={{
+                      backgroundColor: '#5D4037',
+                      color: '#FFF8DC',
+                      '&:hover': {
+                        backgroundColor: '#8D6E63'
+                      }
+                    }}
                   >
-                    <IconButton
-                      sx={{
-                        color: 'white',
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                        },
-                      }}
-                      aria-label={social.label}
+                    View My Work
+                  </StyledButton>
+                  <StyledButton
+                    component={Link}
+                    to="/contact"
+                    variant="outlined"
+                    size={isMobile ? "medium" : "large"}
+                    startIcon={<RocketLaunchIcon />}
+                    sx={{
+                      color: '#FFF8DC',
+                      borderColor: 'rgba(255, 248, 220, 0.3)',
+                      '&:hover': {
+                        borderColor: '#FFF8DC',
+                        backgroundColor: 'rgba(255, 248, 220, 0.1)'
+                      }
+                    }}
+                  >
+                    Contact Me
+                  </StyledButton>
+                </Box>
+                <Box sx={{ display: 'flex', gap: { xs: 1, sm: 2 }, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  {socialLinks.map((social, index) => (
+                    <motion.a
+                      key={social.label}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: 'white' }}
+                      whileHover={{ y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      custom={index + 2}
+                      variants={fadeInUp}
+                      initial="hidden"
+                      animate="visible"
                     >
-                      {React.cloneElement(social.icon, { fontSize: 'large' })}
-                    </IconButton>
-                  </motion.a>
-                ))}
+                      <IconButton
+                        sx={{
+                          color: '#FFF8DC',
+                          backgroundColor: 'rgba(93, 64, 55, 0.5)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(93, 64, 55, 0.8)',
+                          },
+                        }}
+                        aria-label={social.label}
+                      >
+                        {React.cloneElement(social.icon, { fontSize: 'large' })}
+                      </IconButton>
+                    </motion.a>
+                  ))}
+                </Box>
               </Box>
             </motion.div>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {/* This grid item is intentionally left empty for layout purposes */}
           </Grid>
         </Grid>
       </Container>

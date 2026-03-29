@@ -65,7 +65,7 @@ const StockTicker = ({
                   component="h2"
                   sx={{
                     fontWeight: 700,
-                    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                    background: 'linear-gradient(45deg, #5D4037 30%, #A1887F 90%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     fontSize: { xs: '0.9rem', sm: '1.2rem' },
@@ -183,7 +183,7 @@ const StockTicker = ({
           width: '100%',
           position: 'relative',
           py: { xs: 0.25, sm: 1 },
-          background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%)',
+          background: 'linear-gradient(135deg, rgba(93, 64, 55, 0.05) 0%, rgba(161, 136, 127, 0.05) 100%)',
           borderRadius: { xs: 0, sm: 1 },
           '&::before': {
             content: '""',
@@ -192,7 +192,7 @@ const StockTicker = ({
             left: 0,
             right: 0,
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.3), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(93, 64, 55, 0.3), transparent)',
             zIndex: 1,
           },
           '&::after': {
@@ -202,7 +202,7 @@ const StockTicker = ({
             left: 0,
             right: 0,
             height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.3), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(93, 64, 55, 0.3), transparent)',
             zIndex: 1,
           }
         }}

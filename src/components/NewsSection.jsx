@@ -86,7 +86,7 @@ const NewsSection = () => {
             mb: { xs: 1, md: 2 },
             textAlign: 'center',
             fontSize: { xs: '1.2rem', md: '1.6rem' },
-            background: 'linear-gradient(90deg, #3f51b5 0%, #9c27b0 100%)',
+            background: 'linear-gradient(90deg, #5D4037 0%, #A1887F 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',

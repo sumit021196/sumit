@@ -28,20 +28,20 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
       alignItems: 'center',
       textAlign: 'center',
       borderRadius: '10px',
-      background: 'rgba(255, 255, 255, 0.02)',
-      backdropFilter: 'blur(8px)',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
+      background: 'rgba(255, 255, 255, 0.6)',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(93, 64, 55, 0.1)',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
         transform: 'translateY(-3px)',
         boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.1)}`,
         borderColor: (theme) => alpha(theme.palette.primary.main, 0.3),
-        background: 'rgba(255, 255, 255, 0.05)',
+        background: 'rgba(255, 255, 255, 0.8)',
       },
       '& .MuiSvgIcon-root': {
         fontSize: { xs: '1.5rem', sm: '2.2rem' },
         mb: { xs: 0.5, sm: 1 },
-        background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+        background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
       },
@@ -52,7 +52,7 @@ const ServiceCard = ({ icon, title, description, ...props }) => (
       sx: { 
         fontSize: { xs: '1.8rem', sm: '2.5rem' },
         mb: { xs: 0.5, sm: 1 },
-        background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+        background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent'
       } 
@@ -117,7 +117,7 @@ const ServicesSection = () => {
       id="services"
       sx={{
         py: { xs: 2, md: 6 },
-        backgroundColor: 'background.paper',
+        backgroundColor: 'background.default',
         position: 'relative',
         '&::before': {
           content: '""',
@@ -126,7 +126,7 @@ const ServicesSection = () => {
           left: 0,
           right: 0,
           height: '40px',
-          background: 'linear-gradient(to bottom, rgba(15,12,41,1), rgba(15,12,41,0))',
+          background: 'linear-gradient(to bottom, rgba(93,64,55,1), rgba(93,64,55,0))',
           transform: 'translateY(-99%)',
           zIndex: 1,
         },
@@ -143,7 +143,7 @@ const ServicesSection = () => {
             <Typography
               variant="overline"
               sx={{
-                color: 'primary.main',
+                color: 'primary.dark',
                 fontWeight: 600,
                 letterSpacing: 1.5,
                 display: 'inline-block',
@@ -159,7 +159,7 @@ const ServicesSection = () => {
               sx={{
                 fontWeight: 700,
                 mb: { xs: 0.5, sm: 1 },
-                background: 'linear-gradient(45deg, #1976d2 30%, #21CBF3 90%)',
+                background: 'linear-gradient(45deg, #5D4037 30%, #A1887F 90%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 fontSize: { xs: '1.2rem', sm: '2rem' },
