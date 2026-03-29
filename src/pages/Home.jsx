@@ -5,6 +5,7 @@ import HeroSection from '../components/HeroSection';
 import ServicesSection from '../components/ServicesSection';
 import NewsSection from '../components/NewsSection';
 import StockTicker from '../components/StockTicker/StockTicker';
+import InstagramSection from '../components/InstagramSection';
 
 const Home = () => {
   return (
@@ -37,6 +38,14 @@ const Home = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <StockTicker />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <InstagramSection />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
