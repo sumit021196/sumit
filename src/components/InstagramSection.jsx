@@ -72,99 +72,101 @@ const InstagramSection = () => {
           </motion.div>
         </Box>
 
-        <Grid container spacing={2} justifyContent="center">
-          {/* Example Embed placeholders. Without a specific post URL, embedding entire profiles is not natively supported by Instagram iframe without custom widgets. So we use a styled card directing to the profile */}
-          <Grid item xs={12} sm={8} md={6}>
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {/* Instagram dynamically loads embedded posts via an iframe. Add specific post IDs here if needed */}
+          {/* Using blockquotes with the Instagram script is the official way, but generic iframes are safer for React without external script injections */}
+          <Grid item xs={12} sm={6} md={4}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <Paper
-                elevation={0}
+              <Box
                 sx={{
-                  background: 'rgba(255, 255, 255, 0.6)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(93, 64, 55, 0.1)',
+                  width: '100%',
+                  maxWidth: '350px',
+                  mx: 'auto',
                   borderRadius: '16px',
-                  padding: { xs: 3, sm: 4 },
-                  textAlign: 'center',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 12px 24px rgba(93, 64, 55, 0.15)'
-                  }
+                  overflow: 'hidden',
+                  boxShadow: '0 8px 24px rgba(93, 64, 55, 0.15)',
+                  background: '#fff'
                 }}
               >
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mx: 'auto',
-                    mb: 2,
-                    p: '3px'
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      backgroundColor: '#fff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '2px solid white'
-                    }}
-                  >
-                    <img
-                      src="/profilepic.webp"
-                      alt="Profile"
-                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
-                      onError={(e) => { e.target.src = '/logo192.png'; }}
-                    />
-                  </Box>
-                </Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                  @sumit_meshram_02
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                  Full Stack Developer | Content Creator
-                </Typography>
+                <iframe
+                  src="https://www.instagram.com/reel/C2_dWeYxT_i/embed"
+                  width="100%"
+                  height="600"
+                  frameBorder="0"
+                  scrolling="no"
+                  allowTransparency="true"
+                  style={{ border: 'none', background: 'white' }}
+                  title="Instagram Reel 1"
+                ></iframe>
+              </Box>
+            </motion.div>
+          </Grid>
 
-                <Button
-                  variant="contained"
-                  href={profileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  startIcon={<InstagramIcon />}
-                  sx={{
-                    background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                    color: '#fff',
-                    borderRadius: '50px',
-                    px: 4,
-                    py: 1,
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    '&:hover': {
-                      background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
-                      opacity: 0.9,
-                      transform: 'scale(1.02)'
-                    }
-                  }}
-                >
-                  View Profile & Reels
-                </Button>
-              </Paper>
+          <Grid item xs={12} sm={6} md={4}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: '350px',
+                  mx: 'auto',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 8px 24px rgba(93, 64, 55, 0.15)',
+                  background: '#fff'
+                }}
+              >
+                <iframe
+                  src="https://www.instagram.com/reel/C0_y5M8PZ8C/embed"
+                  width="100%"
+                  height="600"
+                  frameBorder="0"
+                  scrolling="no"
+                  allowTransparency="true"
+                  style={{ border: 'none', background: 'white' }}
+                  title="Instagram Reel 2"
+                ></iframe>
+              </Box>
             </motion.div>
           </Grid>
         </Grid>
+
+        <Box sx={{ mt: 5, textAlign: 'center' }}>
+          <Button
+            variant="contained"
+            href={profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            startIcon={<InstagramIcon />}
+            sx={{
+              background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+              color: '#fff',
+              borderRadius: '50px',
+              px: 4,
+              py: 1,
+              fontWeight: 600,
+              textTransform: 'none',
+              boxShadow: '0 4px 12px rgba(225, 48, 108, 0.3)',
+              '&:hover': {
+                background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                opacity: 0.9,
+                transform: 'translateY(-2px)',
+                boxShadow: '0 6px 16px rgba(225, 48, 108, 0.4)',
+              }
+            }}
+          >
+            Follow @sumit_meshram_02
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
