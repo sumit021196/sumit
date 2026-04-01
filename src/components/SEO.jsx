@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({
@@ -10,33 +10,6 @@ const SEO = ({
   image = '/cover.jpg',
   url = window.location.href
 }) => {
-
-  // Performance monitoring
-  useEffect(() => {
-    // Track page load performance
-    if ('performance' in window) {
-      window.addEventListener('load', () => {
-        // Measure and log Core Web Vitals
-        setTimeout(() => {
-          const navigation = performance.getEntriesByType('navigation')[0];
-          if (navigation) {
-            const perfData = {
-              page: url,
-              loadTime: navigation.loadEventEnd - navigation.loadEventStart,
-              domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
-              firstByte: navigation.responseStart - navigation.requestStart,
-            };
-
-            // Log in development or send to analytics in production
-            if (process.env.NODE_ENV === 'development') {
-              console.log('Page Performance:', perfData);
-            }
-          }
-        }, 0);
-      });
-    }
-  }, [url]);
-
   return (
     <Helmet>
       {/* Standard metadata */}

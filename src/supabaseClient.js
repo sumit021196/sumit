@@ -41,16 +41,18 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // Log auth state changes for debugging
 supabase.auth.onAuthStateChange((event, session) => {
-  console.log('Auth state changed:', event);
-  // Don't log the entire session object as it may contain sensitive data
-  if (session) {
-    console.log('User:', {
-      id: session.user?.id,
-      email: session.user?.email,
-      email_verified: session.user?.email_confirmed_at ? true : false
-    });
-  } else {
-    console.log('No active session');
+  if (import.meta.env.DEV) {
+    console.log('Auth state changed:', event);
+    // Don't log the entire session object as it may contain sensitive data
+    if (session) {
+      console.log('User:', {
+        id: session.user?.id,
+        email: session.user?.email,
+        email_verified: session.user?.email_confirmed_at ? true : false
+      });
+    } else {
+      console.log('No active session');
+    }
   }
 });
 

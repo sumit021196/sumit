@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
       return failureCount < 2;
     },
     onSuccess: (data) => {
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.log('✅ Profile loaded successfully');
       }
     },
@@ -83,7 +83,7 @@ export function AuthProvider({ children }) {
       console.error('❌ Profile loading error:', error?.message);
     },
     onSettled: (data, error) => {
-      if (process.env.NODE_ENV === 'development' && error) {
+      if (import.meta.env.DEV && error) {
         console.log('🏁 Profile query completed with error');
       }
     },
